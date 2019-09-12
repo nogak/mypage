@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>機械学習の記録</title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<header>機械学習でやったことを置き場</header>
+	<main>
+		<h1>ニューラルネットワークの基礎</h1>
+		*参考：直感Deep Learning Python*Kerasでアイデアを形にするレシピ
+		<ul>
+			<li>パーセプトロン</li>
+			<li>活性化関数</li>
+			ステップ関数、シグモイド関数、ReLU関数、ソフトマックス関数
+			<li>one-hotエンコーディング</li>
+			<li>モデルをコンパイルする際のオプション</li>
+			学習時の重み更新に使用する最適化アルゴリズム<br>
+			＊とりあえずAdam使っときゃ大丈夫<br>
+			損失関数<br>
+			学習したモデルを評価する
+			<li>損失関数</li>
+			MSE<br>
+			バイナリクロスエントロピー<br>
+			カテゴリクロスエントロピー...etc<br>
+			<li>その他用語</li>
+			精度：ターゲットに対する正しい予測の割合<br>
+			適合率：選択した項目が出れぐらい複数クラスの分類に関連しているかを示す<br>
+			再現率：複数クラス分類において、特定のクラスに関する精度を示す<br>
+			＊これらをTensorBoardで確認できる
+			エポック：モデルが学習データセットに対して学習した回数。学習ごとに最適化アルゴリズムは損失関数の値を最小化するように重みを調整する
+			バッチサイズ：最適化アルゴリズムが重みを更新する際に、データをいくつ使用するかを表す。
+			<li>評価関数</li>
+			損失関数と似ているがこれはモデルの学習には使用されない、モデルの評価のために使用される
+			<li>精度の向上でテクニック</li>
+			隠れ層の追加：ニューロンとrelu活性化関数を持つ全結合層を追加する（＊層を深くすると精度が上がる？）<br>
+			ドロップアウト：全結合層で伝播する値を確率的に伝播させないようにする操作。機械学習でよく使われる正則化（過学習を避ける）と同じ効果が期待できる。（らしい）
+			<li>ハイパーパラメータチューニング</li>
+			コスト関数を最小化するための最適なパラメータの組み合わせを探索するプロセス<br>
+			よくわからない、後で調べる（学習でここが結構効いてくるやつだった希ガス）
+			<li>誤差逆伝播法(バックプロパゲーション)</li>
+			重要な概念、構築したネットワークを微分計算することで逆伝播しながら重みの変更ができるとかなんとか
+			<li>バッチ正規化</li>
+			学習を加速し、一般的に性能を向上させることができる
+			<li>モデルの保存と読み込み</li>
+			モデルアーキテクチャの保存や読み込みは以下参照(keras使用)<br>
+			<pre class='prettyprint lang-js linenums'>
+# JSON形式で保存
+json_string = model.to_json()
+# YAML形式で保存
+yaml_string = model.to_yaml()
+
+from keras.models import model_from_json
+# JSONからのモデル再構築
+model = model_from_json(json_string)
+# YAMLからのモデル再構築
+model = model_from_yaml(yaml_string)</pre>
+			モデルパラメータ(重み)の保存や読み込みは、以下参照
+			<pre class='prettyprint lang-js linenums'>
+from keras.models import load_model
+# HDF5形式のファイル'my_model.h5'を作成
+model.save('my_model.h5')
+# モデルの削除
+del model
+# モデルの読み込み
+model = load_model('my_model.h5')</pre>
+			<li>学習過程をカスタマイズするためのコールバック</li>
+			コールバックを用いることで学習中の結果を保存したり、学習率を調整したり、過学習を抑えるために学習を止めたりできる<br>
+			※コールバックは複数指定可能(list形式でfit関数に渡すらしい)<br>
+			詳しくはhttps://keras.io/callbacks/を参照<br>
+			EarlyStoppingコールバックを用いると、評価関数の値が改善されなくなった時に学習を停止できる
+			<pre class='prettyprint lang-js linenums'>
+keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto')</pre>
+			損失履歴は、以下のようなコールバックを定義することで保存できる
+			<pre class='prettyprint lang-js linenums'>
+class LossHistory(keras.callbacks.Callback):
+	def on_train_begin(self, logs={}):
+		self.losses = []
+		
+	def on_batch_end(self, batch, logs={}):
+		self.losses.append(logs.get('loss'))
+		
+model = Sequential()
+model.add(Dense(10, imput_dim=784, init='uniform'))
+model.add(Activation('softmax'))
+model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
+history = LossHistory()
+model.fit(X_train, Y_train, batch_size=128, nb_epoch=20, verbose=0, callbacks=[history])
+print(history.losses)</pre>
+			<li>チェックポイント</li>
+			アプリケーションの状態のスナップショットを定期的に保存するプロセス<br>
+			→障害発生時に最後に保存された状態からの復帰が可能<br>
+			(学習では、状態=モデルの重み)
+			<li>TensorBoardの使用</li>
+			Kerasは、学習とテストの評価値、及びモデル内の異なる層の活性化ヒストグラムを保存するためのコールバックを提供している<br>
+			コマンドラインでTensorBoardを起動すると、保存されたデータを可視化できる
+			<pre class='prettyprint lang-js linenums'>
+$ tensorboard --logdir=/full_path_to_your_logs</pre>
+			<li>Quiver</li>
+			画像を扱うような高度なDNNで可視化するときに便利
+		</ul>
+
+
+		<pre class='prettyprint lang-js linenums'>
+		test // test
+		</pre>
+
+		<h1>強化学習</h1>
+		<h2 class="section-title">ゲームAIを作ろう</h2>
+		<ul>
+			<li>これから随時更新予定</li>
+		</ul>
+		<h1>教師あり学習</h1>
+		<h2 class="section-title">YOLOv3</h2>
+		<p>学習済みのモデルをダウンロードして使ってみただけだけど精度やばない？</p>
+		<ul>
+			<li>YOLOv3はv2よりもほんの少し速度を犠牲にした代わりに高精度を実現したもの</li>
+		</ul>
+		<div class="img-size">
+			<div class="contents-item">
+				<img src="../image/input_uti.jpg" width="500" height="380">
+			</div>
+			<div class="contents-item">
+				<!--<div class="arrow">
+                    <p>→</p>
+                </div>-->
+			</div>
+			<div class="contents-item">
+				<img src="../image/predictions.jpg" width="500" height="380">
+			</div>
+
+		</div>
+	</main>
+	<!--<footer>footer</footer>-->
+</body>

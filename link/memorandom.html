@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+	<meta charset="UTF-8">
+	<title>タイトル</title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+	src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+  </head>
+
+  <body>
+	<header>備忘録</header>
+	<main>
+		<h1>ubuntuメモ</h1>
+		<h2 class="section-title-short">環境構築</h2>
+		<h3>やる操作一覧</h3>
+		<ul>
+			<li>ディレクトリ名を英語表記に変更</li>
+			<li>caps ctrlの変更</li>
+			<li>autokeyの設定</li>
+		</ul>
+		<h3>入れるソフトウェア</h3>
+		<ul>
+			<li>tarminator　ウィンドウ分割できるターミナル</li>
+			<li>chrome</li>
+			<li>conky　内部の情報監視ツール(gnome-system-monitor起動するのだるいから)</li>
+			<li>vscode　使用エディタ</li>
+			<li>git</li>
+			<li>ros</li>
+			<li>vim</li>
+		</ul>
+		<h3>ディレクトリ名を英語表記に変更</h3>
+		<pre class='prettyprint lang-js'>$ env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update</pre>
+		<a>気が向いたら機会学習の環境構築について書くかも</a><br>
+		<a>cudaとかtensorflowとかyoloとか</a>
+
+		<h2 class="section-title-short">コマンドメモ</h2>
+		<h3>ファイルの所有者を変更</h3>
+		<pre class='prettyprint lang-js'>$ sudo chown user_name file_name</pre>
+		<h3>ファイルのパーミッションの変更</h3>
+		<pre class='prettyprint lang-js'>$ sudo chmod honnkoukengenn file_name</pre>
+		<h3>ディレクトリ直下をまとめて変更　※ちょっと怪しい？間違ってるかも...</h3>
+		<pre class='prettyprint lang-js'>
+$ find /path/to/dir -type d -exec chmod 755 {} +
+$ find /path/to/dir -type f -exec chmod 644 {} +
+$ find /path/to/dir -type f -exec chown user_name {} +</pre>
+		<h2 class="section-title-short">キーバインドの変更</h2>
+		<a>例としてHomeをBackSpaceに置き換える</a>
+		<pre class='prettyprint lang-js'>$ xev</pre>
+		<a>変更したいキーのkeycodeを確認できる</a>
+		<pre class='prettyprint lang-js'>$ xmodmap -pke</pre>
+		<a>対応させたいキーの書き方を確認できる</a><br>
+		<a>(例)</a>
+		<pre class='prettyprint lang-js'>$ xmodmap -pke | grep Home</pre>
+		<pre class='prettyprint lang-js'>$ xmodmap -pke | grep 110</pre>
+		<h3>適応させる</h3>
+		<pre class='prettyprint lang-js'>$ xmodmap -e 'keycode 110 = BackSpace'</pre>
+		<a>動作することを確認したら、後はこれをログインシェルなどに書き込めばOK</a>
+	</main>
+	<footer>footer</footer>
+</body>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>scraping</title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<header>おい，のび太scrapingやろうぜ</header>
+	<main>
+		※参考：Pythonによるスクレイピング&機械学習［開発テクニック］，クジラ飛行机
+		<h1>本ページの目的</h1>
+		<p>&ensp;どうもジャイアンです．本ページではのび太でもわかるようにwebスクレイピングについて<s>書いていきます</s>書かけたらいいな．</p>
+		<p>&ensp;本ページでは，webスクレイピングについて学び，自分がほしい情報を定期的に収集するクローラを構築します．最終的には機械学習で株価予想したいので，そのための情報を収集させたいと思っています．ていうか僕の備忘録も兼ねてます．
+		</p>
+		<p>使用言語：python</p>
+		<p>対象OS：mac, linux ※クローリング以外はwindowsでもできます</p>
+
+		<h1>基本情報</h1>
+		<h2 class="section-title-short">スクレイピングとは</h2>
+		<p>&ensp;スクレイピング(scraping)とは，Webサイトから任意の情報を抽出する技術のことです．
+			Webページの構造解析のほかに，場合によってはログインが必要なページにアクセスする技術も必要になります．</p>
+
+		<h2 class="section-title-short">クローラとは</h2>
+		<p>&ensp;プログラムがWebサイトを定期的に巡回して情報を収集する技術のことです．
+			天気や株，為替など短い周期で変化する場合には最新の情報が欲しいことが多いと思います．
+			そのような情報を集めるときに用いられます．
+			スクレイピングのプログラムを周期的に動作させるというふうに考えていただければ大丈夫です．<br>
+			&ensp;本ページではmac/linuxにて使用できるcronを用いてクローリングする方法を紹介します．
+			また，クローリングする際にはサーバに負担をかけないなどのマナーについても気をつけましょう．
+			因みに，こんな事件もあります．．．
+			<a href="https://ja.wikipedia.org/wiki/岡崎市立中央図書館事件">岡崎市立中央図書館事件</a><br>
+			「なんかよくわかんないけど，プログラム走らせてるし逮捕しよ！」的な感じなのかな．．．
+		</p>
+
+		<h1>pythonライブラリや使用例</h2>
+		<h2 class="section-title-short">urllib</h2>
+		<p>pythonのネットワークライブラリ</p>
+		<ul>
+			<li>request：リクエストモジュール</li>
+			<li>parse：エンコードモジュール</li>
+		</ul>
+		<pre class='prettyprint lang-js linenums'>
+import urllib.request
+
+使用例①:直接ファイルを保存
+urllib.request.urlretrieve('url', 'savefile_name')
+
+使用例②：一度メモリに格納してから保存
+mem = urllib.request.urlopen(k'url').read(0)
+with open(savefile_name, mode='wb') as f:
+	f.write(mem)</pre>
+
+		<h2 class="section-title-short">BeautifulSoup</h2>
+		<p>解析ライブラリ(html, xmlなど)</p>
+		<pre class='prettyprint lang-js linenums'>
+from bs4 import BeautifulSoup
+
+html = """
+&lt;html>
+  &lt;body>
+    &lt;ul>
+      &lt;li>&lt;a href='http://dorayaki.com'>ドラえもん&lt;/a>&lt;/li>
+      &lt;li>&lt;a href='http://jaiko.com'>剛田商店&lt;/a>&lt;/li>
+    &lt;/ul>
+    &lt;ken>東京都&lt;/ken>
+  &lt;/body>
+&lt;/html>
+"""
+# HTMLを解析
+soup = BeautifulSoup(html, 'html.parser')
+
+# find_allメソッドで取り出す
+links = soup.find_all('a') # &lt;a>タグをすべて抽出
+
+# 任意のデータ抽出
+ken = soup.find('ken').string
+
+for a in links:
+	href = a.attrs['href']
+	text = a.string
+	print(text, '>', href)
+
+print(ken)</pre>
+		<p>出力</p>
+		<pre class='prettyprint lang-js '>
+ドラえもん > http:&#047;&#047;dorayaki.com
+剛田商店 > http:&#047;&#047;jaiko.com
+東京都</pre>
+
+		<h2 class="section-title-short">CSSセレクタを使おう</h2>
+		<p>soup.select_one : CSSセレクタで要素を１つ取り出す<br>
+		soup.select : CSSセレクタで複数要素を取り出しリスト型で返す</p>
+		<p>sample code</p>
+		<pre class='prettyprint lang-js linenums'>
+from bs4 import BeautifulSoup
+
+# 解析対象となるHTML
+html = """
+&lt;html>
+  &lt;body>
+    &lt;div id="meigen">
+      &lt;h1>ジャイアンの名言&lt;/h1>
+      &lt;ul class="items">
+        &lt;li>お前のものは俺のもの，俺のものも俺のもの&lt;/li>
+        &lt;li>永久に借りておくだけだぞ&lt;/li>
+        &lt;li>野上さんには勝てないぜ&lt;/li>
+      &lt;/ul>
+    &lt;/div>
+  &lt;/body>
+&lt;/html>
+"""
+
+# HTMLを解析
+soup = BeautifulSoup(html, 'html.parser')
+
+# 必要な部分をCSSクエリで取り出す
+# タイトル部分
+h1 = soup.select_one("div#meigen > h1").string
+print(h1)
+
+# リスト部分
+li_list = soup.select("div#meigen > ul.items > li")
+count = 1
+for li in li_list:
+	print("その" + str(count), li.string)
+	count += 1</pre>
+	    <p>出力</p>
+	    <pre class='prettyprint lang-js '>
+ジャイアンの名言
+その1 お前のものは俺のもの，俺のものも俺のもの
+その2 永久に借りておくだけだぞ
+その3 野上さんには勝てないぜ</pre>
+		<h3>実際にyahoo!ファイナンスから為替情報取得してみる</h3>
+		<p>sample code</p>
+		<pre class='prettyprint lang-js linenums'>
+from bs4 import BeautifulSoup
+import urllib.request as req
+
+# HTMLを取得
+url = "http://stocks.finance.yahoo.co.jp/stocks/detail/?code=usdjpy"
+res = req.urlopen(url)
+
+# HTMLを解析
+soup = BeautifulSoup(res, "html.parser")
+
+# 任意のデータを抽出
+price = soup.select_one(.stockPrice).string
+price2 = soup.select("tr > td.stoksPrice")
+print("usd/jpy =",price)
+print("usd/jpy =",price2[0].string)</pre>
+		<p>出力</p>
+		<pre class='prettyprint lang-js '>
+usd/jpy = 107.360000
+usd/jpy = 107.360000</pre>
+		<p>CSSセレクタの書き方(書式)については調べてね</p>
+		<h3>正規表現と組み合わせる</h3>
+		<p>sample code</p>
+		<pre class='prettyprint lang-js linenums'>
+from bs4 import BeautifulSoup
+import re
+
+html = """
+&lt;ul>
+  &lt;li>&lt;a href="hoge.html">hoge&lt;/li>
+  &lt;li>&lt;a href="https://dorayaki.com">ドラえもん&lt;/li>
+  &lt;li>&lt;a href="https://jaiko.com">剛田商店&lt;/li>
+&lt;/ul>
+"""
+soup = BeautifulSoup(html, "html.parser")
+
+# 正規表現でhrefからhttpsのものを抽出
+li = soup.find_all(href=re.compile(r"^https://"))
+for i in li:
+	print(i.attrs['href'])</pre>
+		<p>出力</p>
+<pre class='prettyprint lang-js '>
+https://dorayaki.com
+https://jaiko.com</pre>
+		<h1>再帰的処理</h2>
+		<p>めんどいからまた今度</p>
+		<h1>高度なスクレイピング</h1>
+		<p>気が向いたら書きます</p>
+		<h2 class="section-title-mid">ログインページのスクレイピング</h2>
+		<h2 class="section-title-mid">ブラウザを使ったスクレイピング</h2>
+		<h2 class="section-title-short">Web APIの利用</h2>
+		<h1>cronを用いたクローリング</h1>
+		<p>気が向いたら書きます</p>
+	</main>
+	<!--<footer>footer</footer>-->
+</body>
