@@ -10,6 +10,7 @@
 </head>
 
 <body>
+	<!-- <header><a href="http://www.qiita.com">おい，のび太scrapingやろうぜ</a></header> -->
 	<header>おい，のび太scrapingやろうぜ</header>
 	<main>
 		※参考：Pythonによるスクレイピング&機械学習［開発テクニック］，クジラ飛行机
@@ -31,10 +32,10 @@
 			そのような情報を集めるときに用いられます．
 			スクレイピングのプログラムを周期的に動作させるというふうに考えていただければ大丈夫です．<br>
 			&ensp;本ページではmac/linuxにて使用できるcronを用いてクローリングする方法を紹介します．
-			また，クローリングする際にはサーバに負担をかけないなどのマナーについても気をつけましょう．
+			また，クローリングする際にはサーバに負担をかけないなどのマナーについても気をつけましょう．<br>
 			因みに，こんな事件もあります．．．
 			<a href="https://ja.wikipedia.org/wiki/岡崎市立中央図書館事件">岡崎市立中央図書館事件</a><br>
-			「なんかよくわかんないけど，プログラム走らせてるし逮捕しよ！」的な感じなのかな．．．
+			<!-- 「なんかよくわかんないけど，プログラム走らせてるし逮捕しよ！」的な感じなのかな．．． -->
 		</p>
 
 		<h1>pythonライブラリや使用例</h2>
@@ -51,7 +52,7 @@ import urllib.request
 urllib.request.urlretrieve('url', 'savefile_name')
 
 使用例②：一度メモリに格納してから保存
-mem = urllib.request.urlopen(k'url').read(0)
+mem = urllib.request.urlopen(k'url').read()
 with open(savefile_name, mode='wb') as f:
 	f.write(mem)</pre>
 
@@ -87,7 +88,7 @@ for a in links:
 
 print(ken)</pre>
 		<p>出力</p>
-		<pre class='prettyprint lang-js '>
+		<pre class='prettyprint lang-js'>
 ドラえもん > http:&#047;&#047;dorayaki.com
 剛田商店 > http:&#047;&#047;jaiko.com
 東京都</pre>
@@ -106,7 +107,7 @@ html = """
     &lt;div id="meigen">
       &lt;h1>ジャイアンの名言&lt;/h1>
       &lt;ul class="items">
-        &lt;li>お前のものは俺のもの，俺のものも俺のもの&lt;/li>
+        &lt;li>お前のコードは俺のもの，俺のコードも俺のもの&lt;/li>
         &lt;li>永久に借りておくだけだぞ&lt;/li>
         &lt;li>野上さんには勝てないぜ&lt;/li>
       &lt;/ul>
@@ -130,12 +131,14 @@ for li in li_list:
 	print("その" + str(count), li.string)
 	count += 1</pre>
 	    <p>出力</p>
-	    <pre class='prettyprint lang-js '>
+	    <pre class='prettyprint lang-js'>
 ジャイアンの名言
-その1 お前のものは俺のもの，俺のものも俺のもの
+その1 お前のコードは俺のもの，俺のコードも俺のもの
 その2 永久に借りておくだけだぞ
 その3 野上さんには勝てないぜ</pre>
 		<h3>実際にyahoo!ファイナンスから為替情報取得してみる</h3>
+		<p>追記：現在yahooファイナンスはサイト内のスクレイピングを禁止しているため，やってはいけないです．<br>
+		</p>
 		<p>sample code</p>
 		<pre class='prettyprint lang-js linenums'>
 from bs4 import BeautifulSoup
@@ -154,7 +157,7 @@ price2 = soup.select("tr > td.stoksPrice")
 print("usd/jpy =",price)
 print("usd/jpy =",price2[0].string)</pre>
 		<p>出力</p>
-		<pre class='prettyprint lang-js '>
+		<pre class='prettyprint lang-js'>
 usd/jpy = 107.360000
 usd/jpy = 107.360000</pre>
 		<p>CSSセレクタの書き方(書式)については調べてね</p>
@@ -182,8 +185,8 @@ for i in li:
 https://dorayaki.com
 https://jaiko.com</pre>
 		<h1>再帰的処理</h2>
-		<p>めんどいからまた今度</p>
-		<h1>高度なスクレイピング</h1>
+		<p>また今度</p>
+		<h1>スクレイピング応用編</h1>
 		<p>気が向いたら書きます</p>
 		<h2 class="section-title-mid">ログインページのスクレイピング</h2>
 		<h2 class="section-title-mid">ブラウザを使ったスクレイピング</h2>

@@ -34,6 +34,10 @@ footer{
 .link{
     float: right;
 }
+}
+.profile{
+    float: right;
+}
 .contents-item {
     float: left;
     margin-right: 40px;
@@ -50,11 +54,17 @@ footer{
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
+.section-title-side{
+    border-left: 5px solid #777;
+    padding-left: 0px;
+    /* margin-left: 20px; */
+    width: 180px;
+}
 .section-title-short{
     border-bottom: 2px solid #777;
     padding-bottom: 0px;
     margin-bottom: 20px;
-    width: 250px;
+    width: 280px;
 }
 .section-title-mid{
     border-bottom: 2px solid #777;
