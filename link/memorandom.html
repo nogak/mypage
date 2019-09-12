@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
+
+<head>
 	<meta charset="UTF-8">
 	<title>タイトル</title>
 	<link rel="stylesheet" href="../stylesheet.css">
 	<script async
-	src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
-  </head>
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
 
-  <body>
+<body>
 	<header>備忘録</header>
 	<main>
 		<h1>ubuntuメモ</h1>
@@ -34,16 +35,6 @@
 		<a>気が向いたら機会学習の環境構築について書くかも</a><br>
 		<a>cudaとかtensorflowとかyoloとか</a>
 
-		<h2 class="section-title-short">コマンドメモ</h2>
-		<h3>ファイルの所有者を変更</h3>
-		<pre class='prettyprint lang-js'>$ sudo chown user_name file_name</pre>
-		<h3>ファイルのパーミッションの変更</h3>
-		<pre class='prettyprint lang-js'>$ sudo chmod honnkoukengenn file_name</pre>
-		<h3>ディレクトリ直下をまとめて変更　※ちょっと怪しい？間違ってるかも...</h3>
-		<pre class='prettyprint lang-js'>
-$ find /path/to/dir -type d -exec chmod 755 {} +
-$ find /path/to/dir -type f -exec chmod 644 {} +
-$ find /path/to/dir -type f -exec chown user_name {} +</pre>
 		<h2 class="section-title-short">キーバインドの変更</h2>
 		<a>例としてHomeをBackSpaceに置き換える</a>
 		<pre class='prettyprint lang-js'>$ xev</pre>
@@ -57,5 +48,4 @@ $ find /path/to/dir -type f -exec chown user_name {} +</pre>
 		<pre class='prettyprint lang-js'>$ xmodmap -e 'keycode 110 = BackSpace'</pre>
 		<a>動作することを確認したら、後はこれをログインシェルなどに書き込めばOK</a>
 	</main>
-	<footer>footer</footer>
 </body>
