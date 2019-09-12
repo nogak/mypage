@@ -34,10 +34,6 @@ footer{
 .link{
     float: right;
 }
-}
-.profile{
-    float: right;
-}
 .contents-item {
     float: left;
     margin-right: 40px;
@@ -72,3 +68,5 @@ footer{
     margin-bottom: 20px;
     width: 400px;
 }
+h3{margin-bottom:5px;}
+p {margin: 1px;}
