@@ -13,6 +13,9 @@
 	<!-- <header><a href="http://www.qiita.com">おい，のび太scrapingやろうぜ</a></header> -->
 	<header>おい，のび太scrapingやろうぜ</header>
 	<main>
+		<dvi class="right">
+			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
+		</dvi>
 		※参考：Pythonによるスクレイピング&機械学習［開発テクニック］，クジラ飛行机
 		<h1>本ページの目的</h1>
 		<p>&ensp;どうもジャイアンです．本ページではのび太でもわかるようにwebスクレイピングについて<s>書いていきます</s>書かけたらいいな．</p>
@@ -39,13 +42,13 @@
 		</p>
 
 		<h1>pythonライブラリや使用例</h2>
-		<h2 class="section-title-short">urllib</h2>
-		<p>pythonのネットワークライブラリ</p>
-		<ul>
-			<li>request：リクエストモジュール</li>
-			<li>parse：エンコードモジュール</li>
-		</ul>
-		<pre class='prettyprint lang-js linenums'>
+			<h2 class="section-title-short">urllib</h2>
+			<p>pythonのネットワークライブラリ</p>
+			<ul>
+				<li>request：リクエストモジュール</li>
+				<li>parse：エンコードモジュール</li>
+			</ul>
+			<pre class='prettyprint lang-js linenums'>
 import urllib.request
 
 使用例①:直接ファイルを保存
@@ -56,9 +59,9 @@ mem = urllib.request.urlopen(k'url').read()
 with open(savefile_name, mode='wb') as f:
 	f.write(mem)</pre>
 
-		<h2 class="section-title-short">BeautifulSoup</h2>
-		<p>解析ライブラリ(html, xmlなど)</p>
-		<pre class='prettyprint lang-js linenums'>
+			<h2 class="section-title-short">BeautifulSoup</h2>
+			<p>解析ライブラリ(html, xmlなど)</p>
+			<pre class='prettyprint lang-js linenums'>
 from bs4 import BeautifulSoup
 
 html = """
@@ -87,17 +90,17 @@ for a in links:
 	print(text, '>', href)
 
 print(ken)</pre>
-		<p>出力</p>
-		<pre class='prettyprint lang-js'>
+			<p>出力</p>
+			<pre class='prettyprint lang-js'>
 ドラえもん > http:&#047;&#047;dorayaki.com
 剛田商店 > http:&#047;&#047;jaiko.com
 東京都</pre>
 
-		<h2 class="section-title-short">CSSセレクタを使おう</h2>
-		<p>soup.select_one : CSSセレクタで要素を１つ取り出す<br>
-		soup.select : CSSセレクタで複数要素を取り出しリスト型で返す</p>
-		<p>sample code</p>
-		<pre class='prettyprint lang-js linenums'>
+			<h2 class="section-title-short">CSSセレクタを使おう</h2>
+			<p>soup.select_one : CSSセレクタで要素を１つ取り出す<br>
+				soup.select : CSSセレクタで複数要素を取り出しリスト型で返す</p>
+			<p>sample code</p>
+			<pre class='prettyprint lang-js linenums'>
 from bs4 import BeautifulSoup
 
 # 解析対象となるHTML
@@ -130,17 +133,17 @@ count = 1
 for li in li_list:
 	print("その" + str(count), li.string)
 	count += 1</pre>
-	    <p>出力</p>
-	    <pre class='prettyprint lang-js'>
+			<p>出力</p>
+			<pre class='prettyprint lang-js'>
 ジャイアンの名言
 その1 お前のコードは俺のもの，俺のコードも俺のもの
 その2 永久に借りておくだけだぞ
 その3 野上さんには勝てないぜ</pre>
-		<h3>実際にyahoo!ファイナンスから為替情報取得してみる</h3>
-		<p>追記：現在yahooファイナンスはサイト内のスクレイピングを禁止しているため，やってはいけないです．<br>
-		</p>
-		<p>sample code</p>
-		<pre class='prettyprint lang-js linenums'>
+			<h3>実際にyahoo!ファイナンスから為替情報取得してみる</h3>
+			<p>追記：現在yahooファイナンスはサイト内のスクレイピングを禁止しているため，やってはいけないです．<br>
+			</p>
+			<p>sample code</p>
+			<pre class='prettyprint lang-js linenums'>
 from bs4 import BeautifulSoup
 import urllib.request as req
 
@@ -156,14 +159,14 @@ price = soup.select_one(.stockPrice).string
 price2 = soup.select("tr > td.stoksPrice")
 print("usd/jpy =",price)
 print("usd/jpy =",price2[0].string)</pre>
-		<p>出力</p>
-		<pre class='prettyprint lang-js'>
+			<p>出力</p>
+			<pre class='prettyprint lang-js'>
 usd/jpy = 107.360000
 usd/jpy = 107.360000</pre>
-		<p>CSSセレクタの書き方(書式)については調べてね</p>
-		<h3>正規表現と組み合わせる</h3>
-		<p>sample code</p>
-		<pre class='prettyprint lang-js linenums'>
+			<p>CSSセレクタの書き方(書式)については調べてね</p>
+			<h3>正規表現と組み合わせる</h3>
+			<p>sample code</p>
+			<pre class='prettyprint lang-js linenums'>
 from bs4 import BeautifulSoup
 import re
 
@@ -180,19 +183,19 @@ soup = BeautifulSoup(html, "html.parser")
 li = soup.find_all(href=re.compile(r"^https://"))
 for i in li:
 	print(i.attrs['href'])</pre>
-		<p>出力</p>
-<pre class='prettyprint lang-js '>
+			<p>出力</p>
+			<pre class='prettyprint lang-js '>
 https://dorayaki.com
 https://jaiko.com</pre>
-		<h1>再帰的処理</h2>
-		<p>また今度</p>
-		<h1>スクレイピング応用編</h1>
-		<p>気が向いたら書きます</p>
-		<h2 class="section-title-mid">ログインページのスクレイピング</h2>
-		<h2 class="section-title-mid">ブラウザを使ったスクレイピング</h2>
-		<h2 class="section-title-short">Web APIの利用</h2>
-		<h1>cronを用いたクローリング</h1>
-		<p>気が向いたら書きます</p>
+			<h1>再帰的処理</h2>
+				<p>また今度</p>
+				<h1>スクレイピング応用編</h1>
+				<p>気が向いたら書きます</p>
+				<h2 class="section-title-mid">ログインページのスクレイピング</h2>
+				<h2 class="section-title-mid">ブラウザを使ったスクレイピング</h2>
+				<h2 class="section-title-short">Web APIの利用</h2>
+				<h1>cronを用いたクローリング</h1>
+				<p>気が向いたら書きます</p>
 	</main>
 	<!--<footer>footer</footer>-->
 </body>
