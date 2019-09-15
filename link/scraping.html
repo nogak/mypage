@@ -48,7 +48,7 @@
 				<li>request：リクエストモジュール</li>
 				<li>parse：エンコードモジュール</li>
 			</ul>
-			<pre class='prettyprint lang-js linenums'>
+			<pre class='prettyprint lang-py linenums'>
 import urllib.request
 
 使用例①:直接ファイルを保存
@@ -61,7 +61,7 @@ with open(savefile_name, mode='wb') as f:
 
 			<h2 class="section-title-short">BeautifulSoup</h2>
 			<p>解析ライブラリ(html, xmlなど)</p>
-			<pre class='prettyprint lang-js linenums'>
+			<pre class='prettyprint lang-py linenums'>
 from bs4 import BeautifulSoup
 
 html = """
@@ -91,7 +91,7 @@ for a in links:
 
 print(ken)</pre>
 			<p>出力</p>
-			<pre class='prettyprint lang-js'>
+			<pre class='prettyprint lang-py'>
 ドラえもん > http:&#047;&#047;dorayaki.com
 剛田商店 > http:&#047;&#047;jaiko.com
 東京都</pre>
@@ -100,7 +100,7 @@ print(ken)</pre>
 			<p>soup.select_one : CSSセレクタで要素を１つ取り出す<br>
 				soup.select : CSSセレクタで複数要素を取り出しリスト型で返す</p>
 			<p>sample code</p>
-			<pre class='prettyprint lang-js linenums'>
+			<pre class='prettyprint lang-py linenums'>
 from bs4 import BeautifulSoup
 
 # 解析対象となるHTML
@@ -134,7 +134,7 @@ for li in li_list:
 	print("その" + str(count), li.string)
 	count += 1</pre>
 			<p>出力</p>
-			<pre class='prettyprint lang-js'>
+			<pre class='prettyprint lang-py'>
 ジャイアンの名言
 その1 お前のコードは俺のもの，俺のコードも俺のもの
 その2 永久に借りておくだけだぞ
@@ -143,7 +143,7 @@ for li in li_list:
 			<p>追記：現在yahooファイナンスはサイト内のスクレイピングを禁止しているため，やってはいけないです．<br>
 			</p>
 			<p>sample code</p>
-			<pre class='prettyprint lang-js linenums'>
+			<pre class='prettyprint lang-py linenums'>
 from bs4 import BeautifulSoup
 import urllib.request as req
 
@@ -160,13 +160,13 @@ price2 = soup.select("tr > td.stoksPrice")
 print("usd/jpy =",price)
 print("usd/jpy =",price2[0].string)</pre>
 			<p>出力</p>
-			<pre class='prettyprint lang-js'>
+			<pre class='prettyprint lang-py'>
 usd/jpy = 107.360000
 usd/jpy = 107.360000</pre>
 			<p>CSSセレクタの書き方(書式)については調べてね</p>
 			<h3>正規表現と組み合わせる</h3>
 			<p>sample code</p>
-			<pre class='prettyprint lang-js linenums'>
+			<pre class='prettyprint lang-py linenums'>
 from bs4 import BeautifulSoup
 import re
 
@@ -184,7 +184,7 @@ li = soup.find_all(href=re.compile(r"^https://"))
 for i in li:
 	print(i.attrs['href'])</pre>
 			<p>出力</p>
-			<pre class='prettyprint lang-js '>
+			<pre class='prettyprint lang-py'>
 https://dorayaki.com
 https://jaiko.com</pre>
 			<h1>再帰的処理</h2>
