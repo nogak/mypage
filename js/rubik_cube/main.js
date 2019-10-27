@@ -502,18 +502,18 @@ function rotate(){
             [face[4][2][2-focus[1]], face[4][1][2-focus[1]], face[4][0][2-focus[1]]] = buf_face[2][2-focus[1]];
             face[2][2-focus[1]] = [buf_face[3][0][focus[1]], buf_face[3][1][focus[1]], buf_face[3][2][focus[1]]];
 
-            if(focus[1] == 2){
+            if(focus[1] == 0){
                 // rotate（時計）
                 for(let i=0; i<=2; i++){
                     for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][2-j][i];
+                        face[5][i][j] = buf_face[5][2-j][i];
                     }
                 }
-            }else if(focus[1] == 0){
+            }else if(focus[1] == 2){
                 // rotate（反時計）
                 for(let i=0; i<=2; i++){
                     for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][j][2-i];
+                        face[0][i][j] = buf_face[0][j][2-i];
                     }
                 }
             }
