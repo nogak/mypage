@@ -4,9 +4,9 @@ let ctx = canvas.getContext("2d");
 // let focus_x = canvas.width/2;
 // let focus_y = canvas.height - 30;
 // let focus = [0, 0];
-
+ctx.lineWidth = 1;
 let cell_size = Math.floor(canvas.height/15);
-const grid_width =  Math.floor(canvas.width/cell_size); //小数点切り捨て
+const grid_width =  Math.floor(canvas.width/cell_size); // round down to the nearest decimal
 const base_point = [Math.floor(grid_width/2*cell_size), cell_size*6];
 
 let face0 = [[1, 1, 1],[1, 1, 1],[1, 1, 1]];
@@ -16,6 +16,7 @@ let face3 = [[4, 4, 4],[4, 4, 4],[4, 4, 4]];
 let face4 = [[5, 5, 5],[5, 5, 5],[5, 5, 5]];
 let face5 = [[6, 6, 6],[6, 6, 6],[6, 6, 6]];
 let face = [face0, face1, face2, face3, face4, face5];
+// cursor positions data
 let focus = [0, 1, 1]; // face_num, x, y
 let grid_focus = false;
 // console.log(face[0][2])
@@ -26,318 +27,29 @@ let left_pressed = false;
 let down_pressed = false;
 let up_pressed = false;
 let space_pressed = false;
-// ctx.lineWidth = 1;右
 
-function rotate(){
-    // const buf_face = Array.from(face);
-    const buf_face = JSON.parse(JSON.stringify(face));
-    if(right_pressed && frame_counter > 10 && grid_focus){
-        frame_counter = 0;
-        // rotate
-        if(focus[0] == 0 || focus[0] == 3 || focus[0] == 4 || focus[0] == 5){
-            face[0][focus[2]] = buf_face[3][focus[2]];
-            face[4][focus[2]] = buf_face[0][focus[2]];
-            face[5][focus[2]] = buf_face[4][focus[2]];
-            face[3][focus[2]] = buf_face[5][focus[2]];
-            // 上面回転（反時計）
-            if(focus[2] == 0){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[1][i][j] = buf_face[1][j][2-i];
-                    }
-                }
-            }
-            // 底面回転（時計）
-            if(focus[2] == 2){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[2][i][j] = buf_face[2][2-j][i];
-                    }
-                }
-            }
-        }else if(focus[0] == 1){
-            face[1][focus[2]] = [buf_face[3][2][focus[2]], buf_face[3][1][focus[2]], buf_face[3][0][focus[2]]];
-            [face[4][0][2-focus[2]], face[4][1][2-focus[2]], face[4][2][2-focus[2]]] = buf_face[1][focus[2]];
-            face[2][2-focus[2]] = [buf_face[4][2][2-focus[2]], buf_face[4][1][2-focus[2]], buf_face[4][0][2-focus[2]]];
-            [face[3][0][focus[2]], face[3][1][focus[2]], face[3][2][focus[2]]] = buf_face[2][2-focus[2]];
-            
-            if(focus[2] == 2){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][2-j][i];
-                    }
-                }
-            }else if(focus[2] == 0){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][j][2-i];
-                    }
-                }
-            }
-        }else if(focus[0] == 2){
-            face[1][2-focus[2]] = [buf_face[4][2][focus[2]], buf_face[4][1][focus[2]], buf_face[4][0][focus[2]]];
-            [face[4][0][focus[2]], face[4][1][focus[2]], face[4][2][focus[2]]] = buf_face[2][focus[2]];
-            face[2][focus[2]] = [buf_face[3][2][2-focus[2]], buf_face[3][1][2-focus[2]], buf_face[3][0][2-focus[2]]];
-            [face[3][0][2-focus[2]], face[3][1][2-focus[2]], face[3][2][2-focus[2]]] = buf_face[1][2-focus[2]];
+// play parameter
+let flag_shuffle = true;
+let shuffle_count = 0;
+let shuffle_num = 2; 
 
-            if(focus[2] == 0){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][j][2-i];
-                    }
-                }
-            }else if(focus[2] == 2){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][2-j][i];
-                    }
-                }
-            }
-        }
+// debug_mode
+let debug_mode = false;
+let char_place_x = 450
 
-    }else if(left_pressed && frame_counter > 10 && grid_focus){
-        frame_counter = 0;
-        // rotate
-        if(focus[0] == 0 || focus[0] == 3 || focus[0] == 4 || focus[0] == 5){
-            face[0][focus[2]] = buf_face[4][focus[2]];
-            face[4][focus[2]] = buf_face[5][focus[2]];
-            face[5][focus[2]] = buf_face[3][focus[2]];
-            face[3][focus[2]] = buf_face[0][focus[2]];
-            // 底面回転（反時計）
-            if(focus[2] == 2){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[2][i][j] = buf_face[2][j][2-i];
-                    }
-                }
-            }
-            // 上面回転（時計）
-            if(focus[2] == 0){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[1][i][j] = buf_face[1][2-j][i];
-                    }
-                }
-            }
-        }else if(focus[0] == 2){
-            face[1][2-focus[2]] = [buf_face[3][2][2-focus[2]], buf_face[3][1][2-focus[2]], buf_face[3][0][2-focus[2]]];
-            [face[4][0][focus[2]], face[4][1][focus[2]], face[4][2][focus[2]]] = buf_face[1][2-focus[2]];
-            face[2][focus[2]] = [buf_face[4][2][focus[2]], buf_face[4][1][focus[2]], buf_face[4][0][focus[2]]];
-            [face[3][0][2-focus[2]], face[3][1][2-focus[2]], face[3][2][2-focus[2]]] = buf_face[2][focus[2]];
-            
-            if(focus[2] == 0){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][2-j][i];
-                    }
-                }
-            }else if(focus[2] == 2){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][j][2-i];
-                    }
-                }
-            }
-        }else if(focus[0] == 1){
-            face[1][focus[2]] = [buf_face[4][2][2-focus[2]], buf_face[4][1][2-focus[2]], buf_face[4][0][2-focus[2]]];
-            [face[4][0][2-focus[2]], face[4][1][2-focus[2]], face[4][2][2-focus[2]]] = buf_face[2][2-focus[2]];
-            face[2][2-focus[2]] = [buf_face[3][2][focus[2]], buf_face[3][1][focus[2]], buf_face[3][0][focus[2]]];
-            [face[3][0][focus[2]], face[3][1][focus[2]], face[3][2][focus[2]]] = buf_face[1][focus[2]];
-
-            if(focus[2] == 2){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][j][2-i];
-                    }
-                }
-            }else if(focus[2] == 0){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][2-j][i];
-                    }
-                }
-            }
-        }
-    }else if(up_pressed && frame_counter > 10 && grid_focus){
-        frame_counter = 0;
-        // rotate
-        if(focus[0] == 2 || focus[0] == 0 || focus[0] == 1 || focus[0] == 5){
-            [face[2][0][focus[1]], face[2][1][focus[1]], face[2][2][focus[1]]] = [buf_face[5][2][2-focus[1]], buf_face[5][1][2-focus[1]], buf_face[5][0][2-focus[1]]];
-            [face[0][0][focus[1]], face[0][1][focus[1]], face[0][2][focus[1]]] = [buf_face[2][0][focus[1]], buf_face[2][1][focus[1]], buf_face[2][2][focus[1]]];
-            [face[1][0][focus[1]], face[1][1][focus[1]], face[1][2][focus[1]]] = [buf_face[0][0][focus[1]], buf_face[0][1][focus[1]], buf_face[0][2][focus[1]]];
-            [face[1][0][focus[1]], face[1][1][focus[1]], face[1][2][focus[1]]] = [buf_face[0][0][focus[1]], buf_face[0][1][focus[1]], buf_face[0][2][focus[1]]];
-            [face[5][2][2-focus[1]], face[5][1][2-focus[1]], face[5][0][2-focus[1]]] = [buf_face[1][0][focus[1]], buf_face[1][1][focus[1]], buf_face[1][2][focus[1]]];
-
-            // 左面回転（反時計）
-            if(focus[1] == 0){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[3][i][j] = buf_face[3][j][2-i];
-                    }
-                }
-            }
-            // 右面回転（時計）
-            if(focus[1] == 2){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[4][i][j] = buf_face[4][2-j][i];
-                    }
-                }
-            }
-        }else if(focus[0] == 3){
-            [face[3][0][focus[1]], face[3][1][focus[1]], face[3][2][focus[1]]] = buf_face[2][2-focus[1]];
-            face[1][focus[1]] = [buf_face[3][2][focus[1]], buf_face[3][1][focus[1]], buf_face[3][0][focus[1]]];
-            [face[4][0][2-focus[1]], face[4][1][2-focus[1]], face[4][2][2-focus[1]]] = buf_face[1][focus[1]];
-            face[2][2-focus[1]] = [buf_face[4][2][2-focus[1]], buf_face[4][1][2-focus[1]], buf_face[4][0][2-focus[1]]];
-
-            if(focus[1] == 2){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][2-j][i];
-                    }
-                }
-            }else if(focus[1] == 0){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][j][2-i];
-                    }
-                }
-            }
-        }else if(focus[0] == 4){
-            [face[3][0][2-focus[1]], face[3][1][2-focus[1]], face[3][2][2-focus[1]]] = buf_face[2][focus[1]];
-            face[1][2-focus[1]] = [buf_face[3][2][2-focus[1]], buf_face[3][1][2-focus[1]], buf_face[3][0][2-focus[1]]];
-            [face[4][0][focus[1]], face[4][1][focus[1]], face[4][2][focus[1]]] = buf_face[1][2-focus[1]];
-            face[2][focus[1]] = [buf_face[4][2][focus[1]], buf_face[4][1][focus[1]], buf_face[4][0][focus[1]]];
-
-            if(focus[2] == 2){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][j][2-i];
-                    }
-                }
-            }else if(focus[2] == 0){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][2-j][i];
-                    }
-                }
-            }
-        }
-    }else if(down_pressed && frame_counter > 10 && grid_focus){
-        frame_counter = 0;
-        // rotate
-        if(focus[0] == 2 || focus[0] == 0 || focus[0] == 1 || focus[0] == 5){
-            [face[1][0][focus[1]], face[1][1][focus[1]], face[1][2][focus[1]]] = [buf_face[5][2][2-focus[1]], buf_face[5][1][2-focus[1]], buf_face[5][0][2-focus[1]]];
-            [face[0][0][focus[1]], face[0][1][focus[1]], face[0][2][focus[1]]] = [buf_face[1][0][focus[1]], buf_face[1][1][focus[1]], buf_face[1][2][focus[1]]];
-            [face[2][0][focus[1]], face[2][1][focus[1]], face[2][2][focus[1]]] = [buf_face[0][0][focus[1]], buf_face[0][1][focus[1]], buf_face[0][2][focus[1]]];
-            [face[5][2][2-focus[1]], face[5][1][2-focus[1]], face[5][0][2-focus[1]]] = [buf_face[2][0][focus[1]], buf_face[2][1][focus[1]], buf_face[2][2][focus[1]]];
-
-            // 左面回転（時計）
-            if(focus[1] == 0){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[3][i][j] = buf_face[3][2-j][i];
-                    }
-                }
-            }
-            // 右面回転（反時計）
-            if(focus[1] == 2){
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[4][i][j] = buf_face[4][j][2-i];
-                    }
-                }
-            }
-        }else if(focus[0] == 3){
-            [face[3][0][focus[1]], face[3][1][focus[1]], face[3][2][focus[1]]] = buf_face[2][2-focus[1]];
-            face[1][focus[1]] = [buf_face[3][2][focus[1]], buf_face[3][1][focus[1]], buf_face[3][0][focus[1]]];
-            [face[4][0][2-focus[1]], face[4][1][2-focus[1]], face[4][2][2-focus[1]]] = buf_face[1][focus[1]];
-            face[2][2-focus[1]] = [buf_face[4][2][2-focus[1]], buf_face[4][1][2-focus[1]], buf_face[4][0][2-focus[1]]];
-
-            if(focus[1] == 2){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][2-j][i];
-                    }
-                }
-            }else if(focus[1] == 0){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][j][2-i];
-                    }
-                }
-            }
-        }else if(focus[0] == 4){
-            [face[3][0][2-focus[1]], face[3][1][2-focus[1]], face[3][2][2-focus[1]]] = buf_face[2][focus[1]];
-            face[1][2-focus[1]] = [buf_face[3][2][2-focus[1]], buf_face[3][1][2-focus[1]], buf_face[3][0][2-focus[1]]];
-            [face[4][0][focus[1]], face[4][1][focus[1]], face[4][2][focus[1]]] = buf_face[1][2-focus[1]];
-            face[2][focus[1]] = [buf_face[4][2][focus[1]], buf_face[4][1][focus[1]], buf_face[4][0][focus[1]]];
-
-            if(focus[2] == 2){
-                // 回転（反時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[0][i][j] = buf_face[0][j][2-i];
-                    }
-                }
-            }else if(focus[2] == 0){
-                // 回転（時計）
-                for(let i=0; i<=2; i++){
-                    for(let j=0; j<=2; j++){
-                        face[5][i][j] = buf_face[5][2-j][i];
-                    }
-                }
-            }
-        }
+function start_shuffle(){
+    if(flag_shuffle){
+        frame_counter = 100;
+        let rotate_vector = Math.floor(Math.random()*4);
+        focus[0] = Math.floor(Math.random()*6);
+        focus[1] = Math.floor(Math.random()*3);
+        focus[2] = Math.floor(Math.random()*3);
+        shuffle_count++;
+    }
+    if(shuffle_count > shuffle_num){
+        flag_shuffle = false;
     }
 }
-
-function select_target(){
-    if(space_pressed){
-        space_pressed = false;
-        console.log('1')
-        if(grid_focus){
-            grid_focus = false;
-        }else{
-            grid_focus = true;
-        }
-    }
-
-}
-
-//-----------------------------------
-function draw(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    draw_grid();
-    draw_base_point();
-    let face_buf = return_face(1);
-    // console.log(face_buf);
-    for(let i=0; i <= 5; i++){
-        draw_cube(i);
-    }
-    draw_cursor();
-    move_cursor();
-    select_target();
-    rotate();
-    frame_counter++;
-    requestAnimationFrame(draw);
-}
-// setInterval(draw, 10);
-draw();
 
 function draw_grid(){
     ctx.beginPath();
@@ -393,7 +105,7 @@ function draw_cell(base_x, base_y, face_num){
         }
         count_2++;
     }
-    // 枠線
+    // plot grid-line
     ctx.lineWidth = 1;
     for(let i=base_y; i<=base_y+cell_size*2; i+=cell_size){
         for(let j=base_x; j<=base_x+cell_size*2; j+=cell_size){
@@ -401,6 +113,11 @@ function draw_cell(base_x, base_y, face_num){
             ctx.strokeRect(j, i, cell_size, cell_size);
         }
     }
+    // plot bold line
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(base_x, base_y, cell_size*3, cell_size*3);
+
 }
 
 function get_base_point(num){
@@ -506,6 +223,398 @@ function draw_cursor(){
     ctx.strokeRect(base[0]+cell_size*focus[1], base[1]+cell_size*focus[2], cell_size, cell_size);
 }
 
+function rotate(){
+    // const buf_face = Array.from(face);
+    const buf_face = JSON.parse(JSON.stringify(face));
+    let rotate_vector = Math.floor(Math.random()*4); // shuffle rotate vector before start
+
+    if((right_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 0)){
+        frame_counter = 0;
+        // rotate
+        if(focus[0] == 0 || focus[0] == 3 || focus[0] == 4 || focus[0] == 5){
+            face[0][focus[2]] = buf_face[3][focus[2]];
+            face[4][focus[2]] = buf_face[0][focus[2]];
+            face[5][focus[2]] = buf_face[4][focus[2]];
+            face[3][focus[2]] = buf_face[5][focus[2]];
+            // top surface rotate（反時計）
+            if(focus[2] == 0){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[1][i][j] = buf_face[1][j][2-i];
+                    }
+                }
+            }
+            // bottom surface rotate（時計）
+            if(focus[2] == 2){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[2][i][j] = buf_face[2][2-j][i];
+                    }
+                }
+            }
+        }else if(focus[0] == 1){
+            face[1][focus[2]] = [buf_face[3][2][focus[2]], buf_face[3][1][focus[2]], buf_face[3][0][focus[2]]];
+            [face[4][0][2-focus[2]], face[4][1][2-focus[2]], face[4][2][2-focus[2]]] = buf_face[1][focus[2]];
+            face[2][2-focus[2]] = [buf_face[4][2][2-focus[2]], buf_face[4][1][2-focus[2]], buf_face[4][0][2-focus[2]]];
+            [face[3][0][focus[2]], face[3][1][focus[2]], face[3][2][focus[2]]] = buf_face[2][2-focus[2]];
+            
+            if(focus[2] == 2){
+                // rotate（時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][2-j][i];
+                    }
+                }
+            }else if(focus[2] == 0){
+                // rotate（反時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][j][2-i];
+                    }
+                }
+            }
+        }else if(focus[0] == 2){
+            face[1][2-focus[2]] = [buf_face[4][0][focus[2]], buf_face[4][1][focus[2]], buf_face[4][2][focus[2]]];
+            [face[4][2][focus[2]], face[4][1][focus[2]], face[4][0][focus[2]]] = buf_face[2][focus[2]];
+            face[2][focus[2]] = [buf_face[3][0][2-focus[2]], buf_face[3][1][2-focus[2]], buf_face[3][2][2-focus[2]]];
+            [face[3][2][2-focus[2]], face[3][1][2-focus[2]], face[3][0][2-focus[2]]] = buf_face[1][2-focus[2]];
+
+            if(focus[2] == 0){
+                // rotate（反時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][j][2-i];
+                    }
+                }
+            }else if(focus[2] == 2){
+                // totate（時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][2-j][i];
+                    }
+                }
+            }
+        }
+
+    }else if((left_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 1)){
+        frame_counter = 0;
+        // rotate
+        if(focus[0] == 0 || focus[0] == 3 || focus[0] == 4 || focus[0] == 5){
+            face[0][focus[2]] = buf_face[4][focus[2]];
+            face[4][focus[2]] = buf_face[5][focus[2]];
+            face[5][focus[2]] = buf_face[3][focus[2]];
+            face[3][focus[2]] = buf_face[0][focus[2]];
+            // bottom surface rotate（反時計）
+            if(focus[2] == 2){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[2][i][j] = buf_face[2][j][2-i];
+                    }
+                }
+            }
+            // top surface rotate（時計）
+            if(focus[2] == 0){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[1][i][j] = buf_face[1][2-j][i];
+                    }
+                }
+            }
+        }else if(focus[0] == 2){
+            face[1][2-focus[2]] = [buf_face[3][2][2-focus[2]], buf_face[3][1][2-focus[2]], buf_face[3][0][2-focus[2]]];
+            [face[4][0][focus[2]], face[4][1][focus[2]], face[4][2][focus[2]]] = buf_face[1][2-focus[2]];
+            face[2][focus[2]] = [buf_face[4][2][focus[2]], buf_face[4][1][focus[2]], buf_face[4][0][focus[2]]];
+            [face[3][0][2-focus[2]], face[3][1][2-focus[2]], face[3][2][2-focus[2]]] = buf_face[2][focus[2]];
+            
+            if(focus[2] == 0){
+                // rotate（時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][2-j][i];
+                    }
+                }
+            }else if(focus[2] == 2){
+                // rotate（反時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][j][2-i];
+                    }
+                }
+            }
+        }else if(focus[0] == 1){
+            face[1][focus[2]] = [buf_face[4][0][2-focus[2]], buf_face[4][1][2-focus[2]], buf_face[4][2][2-focus[2]]];
+            [face[4][2][2-focus[2]], face[4][1][2-focus[2]], face[4][0][2-focus[2]]] = buf_face[2][2-focus[2]];
+            face[2][2-focus[2]] = [buf_face[3][0][focus[2]], buf_face[3][1][focus[2]], buf_face[3][2][focus[2]]];
+            [face[3][2][focus[2]], face[3][1][focus[2]], face[3][0][focus[2]]] = buf_face[1][focus[2]];
+
+            if(focus[2] == 2){
+                // rotate（反時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][j][2-i];
+                    }
+                }
+            }else if(focus[2] == 0){
+                // rotate（時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][2-j][i];
+                    }
+                }
+            }
+        }
+    }else if((up_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 2)){
+        frame_counter = 0;
+        // rotate
+        if(focus[0] == 2 || focus[0] == 0 || focus[0] == 1){
+            [face[2][0][focus[1]], face[2][1][focus[1]], face[2][2][focus[1]]] = [buf_face[5][2][2-focus[1]], buf_face[5][1][2-focus[1]], buf_face[5][0][2-focus[1]]];
+            [face[0][0][focus[1]], face[0][1][focus[1]], face[0][2][focus[1]]] = [buf_face[2][0][focus[1]], buf_face[2][1][focus[1]], buf_face[2][2][focus[1]]];
+            [face[1][0][focus[1]], face[1][1][focus[1]], face[1][2][focus[1]]] = [buf_face[0][0][focus[1]], buf_face[0][1][focus[1]], buf_face[0][2][focus[1]]];
+            [face[5][2][2-focus[1]], face[5][1][2-focus[1]], face[5][0][2-focus[1]]] = [buf_face[1][0][focus[1]], buf_face[1][1][focus[1]], buf_face[1][2][focus[1]]];
+
+            // left surface rotate（反時計）
+            if(focus[1] == 0){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[3][i][j] = buf_face[3][j][2-i];
+                    }
+                }
+            }
+            // right surface rotate（時計）
+            if(focus[1] == 2){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[4][i][j] = buf_face[4][2-j][i];
+                    }
+                }
+            }
+        }else if(focus[0] == 5){
+            [face[1][0][2-focus[1]], face[1][1][2-focus[1]], face[1][2][2-focus[1]]] = [buf_face[5][2][focus[1]], buf_face[5][1][focus[1]], buf_face[5][0][focus[1]]];
+            [face[0][0][2-focus[1]], face[0][1][2-focus[1]], face[0][2][2-focus[1]]] = [buf_face[1][0][2-focus[1]], buf_face[1][1][2-focus[1]], buf_face[1][2][2-focus[1]]];
+            [face[2][0][2-focus[1]], face[2][1][2-focus[1]], face[2][2][2-focus[1]]] = [buf_face[0][0][2-focus[1]], buf_face[0][1][2-focus[1]], buf_face[0][2][2-focus[1]]];
+            [face[5][2][focus[1]], face[5][1][focus[1]], face[5][0][focus[1]]] = [buf_face[2][0][2-focus[1]], buf_face[2][1][2-focus[1]], buf_face[2][2][2-focus[1]]];
+
+            if(focus[1] == 0){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[4][i][j] = buf_face[4][j][2-i];
+                    }
+                }
+            }
+            if(focus[1] == 2){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[3][i][j] = buf_face[3][2-j][i];
+                    }
+                }
+            }
+        }else if(focus[0] == 3){
+            [face[3][0][focus[1]], face[3][1][focus[1]], face[3][2][focus[1]]] = buf_face[2][2-focus[1]];
+            face[1][focus[1]] = [buf_face[3][2][focus[1]], buf_face[3][1][focus[1]], buf_face[3][0][focus[1]]];
+            [face[4][0][2-focus[1]], face[4][1][2-focus[1]], face[4][2][2-focus[1]]] = buf_face[1][focus[1]];
+            face[2][2-focus[1]] = [buf_face[4][2][2-focus[1]], buf_face[4][1][2-focus[1]], buf_face[4][0][2-focus[1]]];
+
+            if(focus[1] == 2){
+                // rotate（時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][2-j][i];
+                    }
+                }
+            }else if(focus[1] == 0){
+                // rotate（反時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][j][2-i];
+                    }
+                }
+            }
+        }else if(focus[0] == 4){
+            [face[3][2][2-focus[1]], face[3][1][2-focus[1]], face[3][0][2-focus[1]]] = buf_face[1][2- focus[1]];
+            face[1][2-focus[1]] = [buf_face[4][0][focus[1]], buf_face[4][1][focus[1]], buf_face[4][2][focus[1]]];
+            [face[4][2][focus[1]], face[4][1][focus[1]], face[4][0][focus[1]]] = buf_face[2][focus[1]];
+            face[2][focus[1]] = [buf_face[3][0][2-focus[1]], buf_face[3][1][2-focus[1]], buf_face[3][2][2-focus[1]]];
+
+            if(focus[1] == 0){
+                // rotate（反時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][j][2-i];
+                    }
+                }
+            }else if(focus[1] == 2){
+                // rotate（時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][2-j][i];
+                    }
+                }
+            }
+        }
+    }else if((down_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 3)){
+        frame_counter = 0;
+        // rotate
+        if(focus[0] == 2 || focus[0] == 0 || focus[0] == 1){
+            [face[1][0][focus[1]], face[1][1][focus[1]], face[1][2][focus[1]]] = [buf_face[5][2][2-focus[1]], buf_face[5][1][2-focus[1]], buf_face[5][0][2-focus[1]]];
+            [face[0][0][focus[1]], face[0][1][focus[1]], face[0][2][focus[1]]] = [buf_face[1][0][focus[1]], buf_face[1][1][focus[1]], buf_face[1][2][focus[1]]];
+            [face[2][0][focus[1]], face[2][1][focus[1]], face[2][2][focus[1]]] = [buf_face[0][0][focus[1]], buf_face[0][1][focus[1]], buf_face[0][2][focus[1]]];
+            [face[5][2][2-focus[1]], face[5][1][2-focus[1]], face[5][0][2-focus[1]]] = [buf_face[2][0][focus[1]], buf_face[2][1][focus[1]], buf_face[2][2][focus[1]]];
+
+            // left surface rotate（時計）
+            if(focus[1] == 0){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[3][i][j] = buf_face[3][2-j][i];
+                    }
+                }
+            }
+            // right surface rotate（反時計）
+            if(focus[1] == 2){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[4][i][j] = buf_face[4][j][2-i];
+                    }
+                }
+            }
+        }else if(focus[0] == 5){
+            [face[2][0][2-focus[1]], face[2][1][2-focus[1]], face[2][2][2-focus[1]]] = [buf_face[5][2][focus[1]], buf_face[5][1][focus[1]], buf_face[5][0][focus[1]]];
+            [face[0][0][2-focus[1]], face[0][1][2-focus[1]], face[0][2][2-focus[1]]] = [buf_face[2][0][2-focus[1]], buf_face[2][1][2-focus[1]], buf_face[2][2][2-focus[1]]];
+            [face[1][0][2-focus[1]], face[1][1][2-focus[1]], face[1][2][2-focus[1]]] = [buf_face[0][0][2-focus[1]], buf_face[0][1][2-focus[1]], buf_face[0][2][2-focus[1]]];
+            [face[5][2][focus[1]], face[5][1][focus[1]], face[5][0][focus[1]]] = [buf_face[1][0][2-focus[1]], buf_face[1][1][2-focus[1]], buf_face[1][2][2-focus[1]]];
+
+            if(focus[1] == 2){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[3][i][j] = buf_face[3][j][2-i];
+                    }
+                }
+            }
+            if(focus[1] == 0){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[4][i][j] = buf_face[4][2-j][i];
+                    }
+                }
+            }
+        }else if(focus[0] == 3){
+            [face[3][2][focus[1]], face[3][1][focus[1]], face[3][0][focus[1]]] = buf_face[1][focus[1]];
+            face[1][focus[1]] = [buf_face[4][0][2-focus[1]], buf_face[4][1][2-focus[1]], buf_face[4][2][2-focus[1]]];
+            [face[4][2][2-focus[1]], face[4][1][2-focus[1]], face[4][0][2-focus[1]]] = buf_face[2][2-focus[1]];
+            face[2][2-focus[1]] = [buf_face[3][0][focus[1]], buf_face[3][1][focus[1]], buf_face[3][2][focus[1]]];
+
+            if(focus[1] == 2){
+                // rotate（時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][2-j][i];
+                    }
+                }
+            }else if(focus[1] == 0){
+                // rotate（反時計）
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][j][2-i];
+                    }
+                }
+            }
+        }else if(focus[0] == 4){
+            [face[3][0][2-focus[1]], face[3][1][2-focus[1]], face[3][2][2-focus[1]]] = buf_face[2][focus[1]];
+            face[1][2-focus[1]] = [buf_face[3][2][2-focus[1]], buf_face[3][1][2-focus[1]], buf_face[3][0][2-focus[1]]];
+            [face[4][0][focus[1]], face[4][1][focus[1]], face[4][2][focus[1]]] = buf_face[1][2-focus[1]];
+            face[2][focus[1]] = [buf_face[4][2][focus[1]], buf_face[4][1][focus[1]], buf_face[4][0][focus[1]]];
+
+            if(focus[1] == 2){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[5][i][j] = buf_face[5][j][2-i];
+                    }
+                }
+            }else if(focus[1] == 0){
+                for(let i=0; i<=2; i++){
+                    for(let j=0; j<=2; j++){
+                        face[0][i][j] = buf_face[0][2-j][i];
+                    }
+                }
+            }
+        }
+    }
+}
+
+function detect_fin(){
+    let clear_num = 0;
+    for(let i=0; i<=5; i++){
+        if(face[i][0][0] == face[i][0][1] && face[i][0][0] == face[i][0][2] && face[i][0][0] == face[i][1][0] && face[i][0][0] == face[i][1][1] && face[i][0][0] == face[i][1][2] && face[i][0][0] == face[i][2][0] && face[i][0][0] == face[i][2][1] && face[i][0][0] == face[i][2][2]){
+            clear_num++;
+        }
+    }
+    // console.log(clear_num);
+    if(clear_num == 6){
+        ctx.font = "25px Arial";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+        ctx.fillText("congratulations", 240, 300);
+    }
+}
+
+function print_debug(){
+    // count number of color attribute
+    let grid_color_num = [0, 0, 0, 0, 0, 0];
+    for(let i=0; i<=5; i++){
+        for(let j=0; j<=2; j++){
+            for(let k=0; k<=2; k++){
+                if(face[i][j][k] == 1){
+                    grid_color_num[0]++;
+                }else if(face[i][j][k] == 2){
+                    grid_color_num[1]++;
+                }else if(face[i][j][k] == 3){
+                    grid_color_num[2]++;
+                }else if(face[i][j][k] == 4){
+                    grid_color_num[3]++;
+                }else if(face[i][j][k] == 5){
+                    grid_color_num[4]++;
+                }else if(face[i][j][k] == 6){
+                    grid_color_num[5]++;
+                }
+            }
+        }
+    }
+    // plot infomation
+    ctx.fillStyle = 'white'
+    ctx.fillRect(char_place_x-80, 2, 90, 125);
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.textAlign = "right";
+    ctx.fillText("green : " + grid_color_num[0], char_place_x, 20);
+    ctx.fillText("yellow : " + grid_color_num[1], char_place_x, 40);
+    ctx.fillText("white : " + grid_color_num[2], char_place_x, 60);
+    ctx.fillText("orange : " + grid_color_num[3], char_place_x, 80);
+    ctx.fillText("red : " + grid_color_num[4], char_place_x, 100);
+    ctx.fillText("blue : " + grid_color_num[5], char_place_x, 120);
+}
+
+//-----------------------------------
+function draw(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    draw_grid();
+    draw_base_point();
+    let face_buf = return_face(1);
+    // console.log(face_buf);
+    for(let i=0; i <= 5; i++){
+        draw_cube(i);
+    }
+    draw_cursor();
+    move_cursor();
+    // select_target();
+    start_shuffle();
+    rotate();
+    frame_counter++;
+
+    detect_fin();
+    if(debug_mode) print_debug();
+    requestAnimationFrame(draw);
+}
+// setInterval(draw, 10);
+draw();
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -520,6 +629,13 @@ function keyDownHandler(e) {
         down_pressed = true;
     }else if(e.keyCode == 32){
         space_pressed = true;
+        grid_focus = true;
+    }else if(e.keyCode == 68){
+        if(debug_mode){
+            debug_mode = false;
+        }else{
+            debug_mode = true;
+        }
     }
 }
 function keyUpHandler(e) {
@@ -533,5 +649,6 @@ function keyUpHandler(e) {
         down_pressed = false;
     }else if(e.keyCode == 32){
         space_pressed == false;
+        grid_focus = false;
     }
 }
