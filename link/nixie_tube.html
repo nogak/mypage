@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>scraping</title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<!-- <header><a href="http://www.qiita.com">おい，のび太scrapingやろうぜ</a></header> -->
+	<header>ニキシー管時計を作ってみました</header>
+	<main>
+		<dvi class="right">
+			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
+		</dvi>
+		<img src="./../image/nixie_clock/nixie_00.jpg" width="400">
+		<h1>本ページの内容</h1>
+		<p>&ensp;タイトルの通りニキシー管で時計を作ってみました．実はニキシー管自体は２年くらい前に買っていたんですが，ずっと放置してて今年になってやっと作りました笑</p>
+		<p>&ensp;プリント基板の設計をしたので<s>見た目もそれなりになりました</s>．設計ミスって再発注したい気分です．しかし，お金がかかるので妥協してます．過去の自分を殴りたいですね...</p>
+		<p>&ensp;また，制作の過程をところどころ省いていますがご容赦ください．</p>
+		<h1>使用したもの</h1>
+		<h2 class="section-title-short">ハード</h2>
+		<ul>
+			<li>ニキシー管✕6</li>
+			<li>Arduino nano</li>
+			<li>RTC(Real Time Clock)モジュール</li>
+			<li>フォトカプラ(TLP627)</li>
+			<li>ニキシー管ドライバ</li>
+			<li>三端子レギュレータ(12V→5V)</li>
+			<li>抵抗とかコンデンサ類</li>
+			<li>昇圧回路(市販品を使いました)</li>
+		</ul>
+		<h2 class="section-title-short">ソフト，サービス</h2>
+		<ul>
+			<li>kicad</li>
+			<li>Seeeed Studio(ここでプリント基板を発注しました)</li>
+		</ul><br>
+		
+		<h1>ニキシー管とは</h1>
+		<p>&ensp;ざっくり言うと，一昔前の製品に用いられていた数字を表示するパーツです．正直僕も実物はそんなに見たことないです...高電圧をかけないと光らないため，利便性などの観点から今は７セグLEDなどに取って代わられた感じがします．シュタインズゲートのダイバージェンスメーターに用いられていることで有名になった気がしますね．</p>
+
+		<h2 class="section-title-mid">ニキシー管ってどこで買うの？</h2>
+		<p>&ensp;基本的にはインターネットで海外から取り寄せる場合が多く，amazonやebayなどで購入できます．日本語以外にも英語で"nixie tube"で検索をかけると出てきます．また，もう生産されていないものがほとんどなので基本的には中古品しかありません．</p>
+		<p>&ensp;手軽に購入できるのはだいたいロシア製のもの(型番がIN-○○のやつ)ですが，種類があるので自分の好きなものを買いましょう．僕はIN-14とIN-16で迷いましたがIN-14の5の表示が気に食わなかったのでIN-16にしました．</p>
+		<br>
+
+		<h1>回路について</h1>
+		<p>&ensp;そこまで細かく解説はしませんが，12Vの入力に対して三端子レギュレータを用いてニキシー管ドライバやarduinoの駆動用電圧5Vと昇圧回路を用いて200V以上に昇圧してニキシー管を駆動させる部分に分けます．
+			そして，ニキシー管(200V)の制御をフォトカプラを介してニキシー管ドライバとarduinoで行うことで時刻を表示します．パーツを少なくするためにダイナミック点灯をやってみました</p>
+		<p>&ensp;また，後ろのほうでkicadで書いた回路図も載せてるので気になる方はそちらを参照してください．(見やすいかどうかは怪しいですが...)</p>
+			
+		<h2 class="section-title-short">昇圧回路</h2>
+		<p>&ensp;昇圧回路はaitendoさんの昇圧回路のキットが安かったので使用しました．可変抵抗で昇圧率を変更できます．</p>
+		<a href="http://www.aitendo.com/product/6872">http://www.aitendo.com/product/6872</a><br>
+		<img src="./../image/nixie_clock/booster_circuit.jpg" width="400">
+		<br>
+
+		<h1>プリント基板を作る</h1>
+		<p>&ensp;kicadの他にもEAGLEなどもありますがサイズ制限がないなどの理由からkicadを選びました．以下参考にしたページです．</p>
+		<ul>
+			<li><a href="http://www.kicad.xyz/entry/circuit/#st-toc-h-1">http://www.kicad.xyz/entry/circuit/#st-toc-h-1</a></li>
+			<li><a href="https://www.slideshare.net/soburi/kicad-53622272">https://www.slideshare.net/soburi/kicad-53622272</a></li>
+		</ul>
+		<h2 class="section-title-short">回路図</h2>
+		<p>&ensp;プリント基板の設計は素人なのであまり参考にならないかもしれませんが...</p><br>
+		<img src="./../image/nixie_clock/whole_circuit.png" width="800">
+
+		<h2 class="section-title-short">自動配線を使いましょう</h2>
+		<p>&ensp;配線数が多いので自動配線で楽しました．また，ニキシー管の穴は寸法を測って作成する必要があります．</p><br>
+		<img src="./../image/nixie_clock/wiring.png" width="800"><br>
+		<p>ちなみに，ここできちんとチェックをしておけば設計ミスは起こらなかった．．．</p>
+
+		<h2 class="section-title-short">Seeedで基板を発注</h2>
+		<p>&ensp;最初はelecrowで発注しようとしたんですが，なぜがアカウント作成ページが封鎖されてて発注できなかったのでseeedにしました．</p>
+		<p>&ensp;kicadで出力したガーバーデータを用いてseeedで発注します．必要なガーバーデータの出力方法はseeedのサイトに書いてあります．</p>
+		<a href="http://support.seeedstudio.com/knowledgebase/articles/1187731-kicad%E3%81%8B%E3%82%89%E3%82%AC%E3%83%BC%E3%83%90%E3%83%BC%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95">KiCADからガーバーファイルを出力する方法</a><br>
+		<p>&ensp;後はサイトの流れに従って材質や層数，寸法などを指定して発注すればおしまいです(※最小単位でも5枚からの発注になります)．届くまで時間がかかりますがその間にRTCモジュールの時刻設定やarduinoのプログラムを作っておきましょう．(今回は省略します)</p>
+		<br>
+
+		<h1>届いたらハンダ付けして完成！</h1>
+		<img src="./../image/nixie_clock/nixie_01.jpg" height="300">
+		<img src="./../image/nixie_clock/nixie_00.jpg" height="300"><br><br>
+		
+		<p>これで完成！！って思ったら上から見ると右上のとこおかしくね？？</p>
+		<img src="./../image/nixie_clock/nixie_00_top.jpg" height="400"><br>
+		<img src="./../image/nixie_clock/nixie_02.jpg" height="400">
+		<img src="./../image/nixie_clock/nixie_03.jpg" height="400"><br>
+		<p>&ensp;二箇所穴があるんですがひとつは四隅の足用のものでDCジャックが干渉して入りませんでした...もうひとつは下の段につけてある昇圧回路とスペーサーでつなぐ部分なのですが穴の位置をまちがえてました．もうポンコツ過ぎて何も言えないですね．．．</p>
+		<p>&ensp;ちなみに他にもDCジャックの穴を左右反転に作ってたりもしたんですが，そちらは使わない3つめのピンを折ることで解決しました．</p>
+		<br>
+		
+		<h1>最後に</h1>
+		<p>&ensp;様々な設計ミスはあったものの，一応動くということで今回はOKということにしましたが，タクトスイッチなどでモードを切替えたりなどの機能の追加などもすればよかったなと思いました．設計ミスった基板残り4枚どうしようかな...</p>
+
+	</main>
+	<!--<footer>footer</footer>-->
+</body>
