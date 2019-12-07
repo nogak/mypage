@@ -27,6 +27,14 @@ let left_pressed = false;
 let down_pressed = false;
 let up_pressed = false;
 let space_pressed = false;
+let long_press_flag_right = 0;
+let long_press_flag_left = 0;
+let long_press_flag_up = 0;
+let long_press_flag_down = 0;
+let right_up_flag = false;
+let left_up_flag = false;
+let up_up_flag = false;
+let down_up_flag = false;
 
 // play parameter
 let flag_shuffle = true;
@@ -265,7 +273,8 @@ function draw_cube(num){
 }
 
 function move_cursor(){
-    if(right_pressed && frame_counter > 10 && !grid_focus){
+    let buf = 0;
+    if((right_pressed && (frame_counter > 13 || right_up_flag) && !grid_focus) || (right_pressed && long_press_flag_right > 1 && frame_counter > 5)){
         if(focus[1] == 2){
             if(focus[0] == 3){
                 focus = [0, 0, focus[2]];
@@ -277,9 +286,13 @@ function move_cursor(){
         }else{
             focus = [focus[0], focus[1]+1, focus[2]]
         }
+        buf = long_press_flag_right;
+        long_press_flag_reset();
+        long_press_flag_right = buf + 1;
         frame_counter = 0;
+        right_up_flag = false;
     }
-    if(left_pressed && frame_counter > 10 && !grid_focus){
+    if((left_pressed && (frame_counter > 13 || left_up_flag) && !grid_focus) || (left_pressed && long_press_flag_left > 1 && frame_counter > 5)){
         if(focus[1] == 0){
             if(focus[0] == 5){
                 focus = [4, 2, focus[2]];
@@ -291,9 +304,13 @@ function move_cursor(){
         }else{
             focus = [focus[0], focus[1]-1, focus[2]]
         }
+        buf = long_press_flag_left;
+        long_press_flag_reset();
+        long_press_flag_left = buf + 1;
         frame_counter = 0;
+        left_up_flag = false;
     }
-    if(up_pressed && frame_counter > 10 && !grid_focus){
+    if((up_pressed && (frame_counter > 13 || up_up_flag) && !grid_focus) || (up_pressed && long_press_flag_up > 1 && frame_counter > 5)){
         if(focus[2] == 0){
             if(focus[0] == 2){
                 focus = [0, focus[1], 2];
@@ -303,9 +320,13 @@ function move_cursor(){
         }else{
             focus = [focus[0], focus[1], focus[2]-1]
         }
+        buf = long_press_flag_up;
+        long_press_flag_reset();
+        long_press_flag_up = buf + 1;
         frame_counter = 0;
+        up_up_flag = false;
     }
-    if(down_pressed && frame_counter > 10 && !grid_focus){
+    if((down_pressed && (frame_counter > 13 || down_up_flag) && !grid_focus) || (down_pressed && long_press_flag_down > 1 && frame_counter > 5)){
         if(focus[2] == 2){
             if(focus[0] == 1){
                 focus = [0, focus[1], 0];
@@ -315,7 +336,11 @@ function move_cursor(){
         }else{
             focus = [focus[0], focus[1], focus[2]+1]
         }
+        buf = long_press_flag_down;
+        long_press_flag_reset();
+        long_press_flag_down = buf + 1;
         frame_counter = 0;
+        down_up_flag = false;
     }
 }
 
@@ -671,6 +696,13 @@ function detect_fin(){
     }
 }
 
+function long_press_flag_reset(){
+    long_press_flag_down = 0;
+    long_press_flag_left = 0;
+    long_press_flag_right = 0;
+    long_press_flag_up = 0;
+}
+
 function print_debug(){
     // count number of color attribute
     let grid_color_num = [0, 0, 0, 0, 0, 0];
@@ -782,14 +814,19 @@ function keyDownHandler(e) {
 function keyUpHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         right_pressed = false;
+        right_up_flag = true;
     }else if(e.key == "Left" || e.key == "ArrowLeft") {
         left_pressed = false;
+        left_up_flag = true;
     }else if(e.keyCode == 38){
         up_pressed = false;
+        up_up_flag = true;
     }else if(e.keyCode == 40){
         down_pressed = false;
+        up_up_flag = true;
     }else if(e.keyCode == 32){
         space_pressed == false;
         grid_focus = false;
     }
+    long_press_flag_reset();
 }
