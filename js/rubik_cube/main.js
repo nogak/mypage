@@ -31,11 +31,120 @@ let space_pressed = false;
 // play parameter
 let flag_shuffle = true;
 let shuffle_count = 0;
-let shuffle_num = 2; 
+let shuffle_num = 2;
+
+//menu_param
+let flag_start_menu = true;
+let color_buf = [];
+let select_mode = 0;
+let menu_counter = 0;
 
 // debug_mode
 let debug_mode = false;
 let char_place_x = 450
+
+function start_select(){
+    //print title
+    ctx.fillStyle = 'white'
+    ctx.fillRect(canvas.width/6, canvas.height/6, canvas.width*4/6, canvas.height*2/6);
+    ctx.lineWidth = 3;
+    ctx.strokeRect(canvas.width/6, canvas.height/6, canvas.width*4/6, canvas.height*2/6);
+    ctx.font = "50px arial black";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.fillText("Rubik Cube", canvas.width/2, canvas.height/3+20);
+    
+    //print mode select
+    ctx.fillStyle = 'white'
+    ctx.fillRect(canvas.width/8, canvas.height*4/6, canvas.width*6/8, canvas.height*1/6+20);
+    ctx.font = "20px arial";
+    ctx.strokeStyle = "#FF00FF";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.fillText("Easy", canvas.width/4, canvas.height*3/4+10);
+    ctx.fillText("Normal", canvas.width/2, canvas.height*3/4+10);
+    ctx.fillText("Hard", canvas.width*3/4, canvas.height*3/4+10);
+    ctx.font = "15px arial";
+    ctx.fillText("Please select mode and press Enter or Space", canvas.width/2, canvas.height*3/4+40);
+
+    //print select bar
+    ctx.fillStyle = '#FF00FF'
+    ctx.lineWidth = 3;
+    if(select_mode == 0){
+        ctx.strokeRect(canvas.width/2-155, canvas.height*3/4 - 13, 70, 30);
+        shuffle_num = 2;
+    }else if(select_mode == 1){
+        ctx.strokeRect(canvas.width/2-38, canvas.height*3/4 - 13, 75, 30);
+        shuffle_num = 5;
+    }else if(select_mode == 2){
+        ctx.strokeRect(canvas.width/2+85, canvas.height*3/4 - 13, 70, 30);
+        shuffle_num = 10;
+    }
+}
+
+function grid_color_random(mode){
+    let color_rand;
+    let color_counter = 0;
+    if(mode == 1){
+        color_buf = [];
+        for(let i=0.0; i < canvas.width; i+=cell_size){
+            for(let j=0.0; j < canvas.height; j+=cell_size){
+                color_rand = Math.floor(Math.random()*7);
+                color_buf.push(color_rand);
+                if(color_rand == 1){
+                    ctx.fillStyle = '#00FF00'
+                }else if(color_rand == 2){
+                    ctx.fillStyle = 'white'
+                }else if(color_rand == 3){
+                    ctx.fillStyle = 'yellow'
+                }else if(color_rand == 4){
+                    ctx.fillStyle = 'orange'
+                }else if(color_rand == 5){
+                    ctx.fillStyle = 'red'
+                }else if(color_rand == 6){
+                    ctx.fillStyle = 'blue'
+                }
+                ctx.fillRect(i, j, cell_size, cell_size);
+            }
+        }
+    }else{
+        for(let i=0.0; i < canvas.width; i+=cell_size){
+            for(let j=0.0; j < canvas.height; j+=cell_size){
+                color_rand = color_buf[color_counter];
+                color_counter++;
+                if(color_rand == 1){
+                    ctx.fillStyle = '#00FF00'
+                }else if(color_rand == 2){
+                    ctx.fillStyle = 'white'
+                }else if(color_rand == 3){
+                    ctx.fillStyle = 'yellow'
+                }else if(color_rand == 4){
+                    ctx.fillStyle = 'orange'
+                }else if(color_rand == 5){
+                    ctx.fillStyle = 'red'
+                }else if(color_rand == 6){
+                    ctx.fillStyle = 'blue'
+                }
+                ctx.fillRect(i, j, cell_size, cell_size);
+            }
+        }
+    }
+
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'black';
+    // horizontal line
+    for(let i=0.0; i < canvas.height; i+=cell_size){
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvas.width, i);
+    }
+    for(let i=0.0; i < canvas.width; i+=cell_size){
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, canvas.height);
+    }
+    ctx.closePath();
+    ctx.stroke();
+}
 
 function start_shuffle(){
     if(flag_shuffle){
@@ -549,10 +658,16 @@ function detect_fin(){
     }
     // console.log(clear_num);
     if(clear_num == 6){
+        ctx.fillStyle = 'white'
+        ctx.fillRect(canvas.width/4, canvas.height*8/10+5, canvas.width/2, 50);
+        ctx.strokeStyle = '#FF0000'
+        ctx.lineWidth = 3;
+        ctx.strokeRect(canvas.width/4, canvas.height*8/10+5, canvas.width/2, 50);
+
         ctx.font = "25px Arial";
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        ctx.fillText("congratulations", 240, 300);
+        ctx.fillText("congratulations", canvas.width/2, canvas.height*9/10+5);
     }
 }
 
@@ -596,6 +711,19 @@ function print_debug(){
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     draw_grid();
+    if(flag_start_menu){
+        if(frame_counter > 100 || frame_counter == 0){
+            grid_color_random(1);
+            frame_counter = 1;
+        }else{
+            grid_color_random(2);
+        }
+        start_select();
+        frame_counter++;
+        menu_counter++;
+        requestAnimationFrame(draw);
+        return;
+    }
     draw_base_point();
     let face_buf = return_face(1);
     // console.log(face_buf);
@@ -621,8 +749,18 @@ document.addEventListener("keyup", keyUpHandler, false);
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         right_pressed = true;
+        if(flag_start_menu && menu_counter > 5){
+            select_mode++;
+            if(select_mode > 2) select_mode = 2;
+            menu_counter = 0;
+        }
     }else if(e.key == "Left" || e.key == "ArrowLeft") {
         left_pressed = true;
+        if(flag_start_menu && menu_counter > 5){
+            select_mode--;
+            if(select_mode < 0) select_mode = 0;
+            menu_counter = 0;
+        }
     }else if(e.keyCode == 38){
         up_pressed = true;
     }else if(e.keyCode == 40){
@@ -630,12 +768,15 @@ function keyDownHandler(e) {
     }else if(e.keyCode == 32){
         space_pressed = true;
         grid_focus = true;
-    }else if(e.keyCode == 68){
+        if(flag_start_menu) flag_start_menu = false;
+    }else if(e.keyCode == 68){ //key : d
         if(debug_mode){
             debug_mode = false;
         }else{
             debug_mode = true;
         }
+    }else if(e.keyCode == 13){ // key : enter
+        if(flag_start_menu) flag_start_menu = false;
     }
 }
 function keyUpHandler(e) {
