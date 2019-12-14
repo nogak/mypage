@@ -35,6 +35,7 @@ let right_up_flag = false;
 let left_up_flag = false;
 let up_up_flag = false;
 let down_up_flag = false;
+let rotate_counter = 0;
 
 // play parameter
 let flag_shuffle = true;
@@ -44,15 +45,15 @@ let shuffle_num = 2;
 //menu_param
 let flag_start_menu = true;
 let color_buf = [];
-let select_mode = 0;
+let select_mode = 0; // 0:easy, 1:normal, 2:hard
 let menu_counter = 0;
 
 // debug_mode
 let debug_mode = false;
-let char_place_x = 450
+let char_place_x = 90;
 
 function start_select(){
-    //print title
+    // print title
     ctx.fillStyle = 'white'
     ctx.fillRect(canvas.width/6, canvas.height/6, canvas.width*4/6, canvas.height*2/6);
     ctx.lineWidth = 3;
@@ -62,7 +63,7 @@ function start_select(){
     ctx.textAlign = "center";
     ctx.fillText("Rubik Cube", canvas.width/2, canvas.height/3+20);
     
-    //print mode select
+    // print mode select
     ctx.fillStyle = 'white'
     ctx.fillRect(canvas.width/8, canvas.height*4/6, canvas.width*6/8, canvas.height*1/6+20);
     ctx.font = "20px arial";
@@ -97,19 +98,19 @@ function grid_color_random(mode){
         color_buf = [];
         for(let i=0.0; i < canvas.width; i+=cell_size){
             for(let j=0.0; j < canvas.height; j+=cell_size){
-                color_rand = Math.floor(Math.random()*7);
+                color_rand = Math.floor(Math.random()*6);
                 color_buf.push(color_rand);
-                if(color_rand == 1){
+                if(color_rand == 0){
                     ctx.fillStyle = '#00FF00'
-                }else if(color_rand == 2){
+                }else if(color_rand == 1){
                     ctx.fillStyle = 'white'
-                }else if(color_rand == 3){
+                }else if(color_rand == 2){
                     ctx.fillStyle = 'yellow'
-                }else if(color_rand == 4){
+                }else if(color_rand == 3){
                     ctx.fillStyle = 'orange'
-                }else if(color_rand == 5){
+                }else if(color_rand == 4){
                     ctx.fillStyle = 'red'
-                }else if(color_rand == 6){
+                }else if(color_rand == 5){
                     ctx.fillStyle = 'blue'
                 }
                 ctx.fillRect(i, j, cell_size, cell_size);
@@ -120,17 +121,17 @@ function grid_color_random(mode){
             for(let j=0.0; j < canvas.height; j+=cell_size){
                 color_rand = color_buf[color_counter];
                 color_counter++;
-                if(color_rand == 1){
+                if(color_rand == 0){
                     ctx.fillStyle = '#00FF00'
-                }else if(color_rand == 2){
+                }else if(color_rand == 1){
                     ctx.fillStyle = 'white'
-                }else if(color_rand == 3){
+                }else if(color_rand == 2){
                     ctx.fillStyle = 'yellow'
-                }else if(color_rand == 4){
+                }else if(color_rand == 3){
                     ctx.fillStyle = 'orange'
-                }else if(color_rand == 5){
+                }else if(color_rand == 4){
                     ctx.fillStyle = 'red'
-                }else if(color_rand == 6){
+                }else if(color_rand == 5){
                     ctx.fillStyle = 'blue'
                 }
                 ctx.fillRect(i, j, cell_size, cell_size);
@@ -163,8 +164,9 @@ function start_shuffle(){
         focus[2] = Math.floor(Math.random()*3);
         shuffle_count++;
     }
-    if(shuffle_count > shuffle_num){
+    if(shuffle_count > shuffle_num && flag_shuffle){
         flag_shuffle = false;
+        rotate_counter = 0;
     }
 }
 
@@ -364,6 +366,7 @@ function rotate(){
 
     if((right_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 0)){
         frame_counter = 0;
+        rotate_counter++;
         // rotate
         if(focus[0] == 0 || focus[0] == 3 || focus[0] == 4 || focus[0] == 5){
             face[0][focus[2]] = buf_face[3][focus[2]];
@@ -432,6 +435,7 @@ function rotate(){
 
     }else if((left_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 1)){
         frame_counter = 0;
+        rotate_counter++;
         // rotate
         if(focus[0] == 0 || focus[0] == 3 || focus[0] == 4 || focus[0] == 5){
             face[0][focus[2]] = buf_face[4][focus[2]];
@@ -499,6 +503,7 @@ function rotate(){
         }
     }else if((up_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 2)){
         frame_counter = 0;
+        rotate_counter++
         // rotate
         if(focus[0] == 2 || focus[0] == 0 || focus[0] == 1){
             [face[2][0][focus[1]], face[2][1][focus[1]], face[2][2][focus[1]]] = [buf_face[5][2][2-focus[1]], buf_face[5][1][2-focus[1]], buf_face[5][0][2-focus[1]]];
@@ -587,6 +592,7 @@ function rotate(){
         }
     }else if((down_pressed && frame_counter > 10 && grid_focus) || (flag_shuffle && rotate_vector == 3)){
         frame_counter = 0;
+        rotate_counter++;
         // rotate
         if(focus[0] == 2 || focus[0] == 0 || focus[0] == 1){
             [face[1][0][focus[1]], face[1][1][focus[1]], face[1][2][focus[1]]] = [buf_face[5][2][2-focus[1]], buf_face[5][1][2-focus[1]], buf_face[5][0][2-focus[1]]];
@@ -692,7 +698,11 @@ function detect_fin(){
         ctx.font = "25px Arial";
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        ctx.fillText("congratulations", canvas.width/2, canvas.height*9/10+5);
+        if((select_mode == 0 && rotate_counter <= 2) || (select_mode == 1 && rotate_counter <= 5) || (select_mode == 2 && rotate_counter <=10)){
+            ctx.fillText("You are genius!!", canvas.width/2, canvas.height*9/10+5);    
+        }else{
+            ctx.fillText("congratulations!", canvas.width/2, canvas.height*9/10+5);
+        }
     }
 }
 
@@ -701,6 +711,16 @@ function long_press_flag_reset(){
     long_press_flag_left = 0;
     long_press_flag_right = 0;
     long_press_flag_up = 0;
+}
+
+function print_rotate_counter(){
+    let char_pos = canvas.width*18/20 - 160;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(char_pos, 20, 230, 30);
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "left";
+    ctx.fillText("Number of rotations : " + rotate_counter, char_pos+10, 40);
 }
 
 function print_debug(){
@@ -727,16 +747,16 @@ function print_debug(){
     }
     // plot infomation
     ctx.fillStyle = 'white'
-    ctx.fillRect(char_place_x-80, 2, 90, 125);
+    ctx.fillRect(char_place_x-80, 10, 90, 125);
     ctx.font = "16px Arial";
     ctx.fillStyle = "#0095DD";
     ctx.textAlign = "right";
-    ctx.fillText("green : " + grid_color_num[0], char_place_x, 20);
-    ctx.fillText("yellow : " + grid_color_num[1], char_place_x, 40);
-    ctx.fillText("white : " + grid_color_num[2], char_place_x, 60);
-    ctx.fillText("orange : " + grid_color_num[3], char_place_x, 80);
-    ctx.fillText("red : " + grid_color_num[4], char_place_x, 100);
-    ctx.fillText("blue : " + grid_color_num[5], char_place_x, 120);
+    ctx.fillText("green : " + grid_color_num[0], char_place_x, 30);
+    ctx.fillText("yellow : " + grid_color_num[1], char_place_x, 50);
+    ctx.fillText("white : " + grid_color_num[2], char_place_x, 70);
+    ctx.fillText("orange : " + grid_color_num[3], char_place_x, 90);
+    ctx.fillText("red : " + grid_color_num[4], char_place_x, 110);
+    ctx.fillText("blue : " + grid_color_num[5], char_place_x, 130);
 }
 
 //-----------------------------------
@@ -744,7 +764,7 @@ function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     draw_grid();
     if(flag_start_menu){
-        if(frame_counter > 100 || frame_counter == 0){
+        if(frame_counter > 60 || frame_counter == 0){
             grid_color_random(1);
             frame_counter = 1;
         }else{
@@ -767,6 +787,7 @@ function draw(){
     // select_target();
     start_shuffle();
     rotate();
+    print_rotate_counter();
     frame_counter++;
 
     detect_fin();
@@ -779,23 +800,23 @@ draw();
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 function keyDownHandler(e) {
-    if(e.key == "Right" || e.key == "ArrowRight") {
+    if(e.key == "Right" || e.key == "ArrowRight" || e.keyCode == 76) { // 76 : l
         right_pressed = true;
         if(flag_start_menu && menu_counter > 5){
             select_mode++;
             if(select_mode > 2) select_mode = 2;
             menu_counter = 0;
         }
-    }else if(e.key == "Left" || e.key == "ArrowLeft") {
+    }else if(e.key == "Left" || e.key == "ArrowLeft" || e.keyCode == 74) { // 74 : j
         left_pressed = true;
         if(flag_start_menu && menu_counter > 5){
             select_mode--;
             if(select_mode < 0) select_mode = 0;
             menu_counter = 0;
         }
-    }else if(e.keyCode == 38){
+    }else if(e.keyCode == 38 || e.keyCode == 73){ // 73 : i
         up_pressed = true;
-    }else if(e.keyCode == 40){
+    }else if(e.keyCode == 40 || e.keyCode == 75){ // 75 : k
         down_pressed = true;
     }else if(e.keyCode == 32){
         space_pressed = true;
@@ -812,16 +833,16 @@ function keyDownHandler(e) {
     }
 }
 function keyUpHandler(e) {
-    if(e.key == "Right" || e.key == "ArrowRight") {
+    if(e.key == "Right" || e.key == "ArrowRight" || e.keyCode == 76) {
         right_pressed = false;
         right_up_flag = true;
-    }else if(e.key == "Left" || e.key == "ArrowLeft") {
+    }else if(e.key == "Left" || e.key == "ArrowLeft" || e.keyCode == 74) {
         left_pressed = false;
         left_up_flag = true;
-    }else if(e.keyCode == 38){
+    }else if(e.keyCode == 38 || e.keyCode == 73){
         up_pressed = false;
         up_up_flag = true;
-    }else if(e.keyCode == 40){
+    }else if(e.keyCode == 40 || e.keyCode == 75){
         down_pressed = false;
         up_up_flag = true;
     }else if(e.keyCode == 32){
