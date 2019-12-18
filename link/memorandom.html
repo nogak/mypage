@@ -25,7 +25,7 @@
 		</ul>
 		<h3>入れるソフトウェア</h3>
 		<ul>
-			<li>tarminator　ウィンドウ分割できるターミナル</li>
+			<li>terminator　ウィンドウ分割できるターミナル</li>
 			<li>chrome</li>
 			<li>conky　内部の情報監視ツール(gnome-system-monitor起動するのだるいから)</li>
 			<li>vscode　使用エディタ</li>
@@ -50,5 +50,17 @@
 		<h3>適応させる</h3>
 		<pre class='prettyprint lang-js'>$ xmodmap -e 'keycode 110 = BackSpace'</pre>
 		<a>動作することを確認したら、後はこれをログインシェルなどに書き込めばOK</a>
+		
+		<h2 class="section-title-long">ubuntu18.04で日本語入力に切り替える</h2>
+		<a href="https://do-you-linux.com/blog/2018/05/03/ubuntu18-04-ltsで「日本語入力」する方法-日英キーボード対/">ここを参照</a>
+		<h2 class="section-title-short">ログインループ時の対処</h2>
+		<p>CUIモードでログインする（ctrl + alt + F1）</p>
+		<p>GPUの型番を調べて，そのグラボにあったnvdiaドライバを入れて再起動する．</p>
+		<pre class='prettyprint lang-js'>
+$ sudo add-apt-repository ppa:graphics-drivers/ppa -y
+$ sudo apt-get update
+$ sudo apt-get install nvidia-***
+$ sudo reboot
+</pre>
 	</main>
 </body>
