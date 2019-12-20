@@ -79,8 +79,28 @@ $ sudo reboot
 		<a>※linux以外のOSのアクティベートファイルもbin/以下にあります．</a><br>
 		<h3>環境から出る</h3>
 		<pre class='prettyprint'>$ deactivate</pre>
+
 		<h2 class="section-title-short">機械学習環境の構築</h2>
-		<a>必ずcuda，cudnn，tensorflowのバージョン関係のチェックをすること．最新のcudaを入れるとバージョンを下げることになることが多いです．また，numpyのバージョンが合わないときがあり，その際は入れ直す必要がある．(importしたときに警告文がでる．)</a>
-		<h3>
+		<a>必ずcuda，cudnn，tensorflowのバージョン関係のチェックをすること．最新のcudaを入れるとバージョンを下げることになるパターンが多い．</a>
+		<h3>cudaのインストール</h3>
+		<a>debファイルをローカルに持ってきたときの手順(cuda10.0の場合)</a>
+		<pre class='prettyprint'>
+$ sudo dpkg -i cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64.deb
+$ sudo apt-key add /var/cuda-repo-10-0-local-10.0.130-410.48/7fa2af80.pub
+$ sudo apt-get update
+$ sudo apt-get install cuda-toolkit-10-0</pre>
+		<h3>cudnnのインストール</h3>
+		nvidiaのサイトからcudaのバージョンにあったものをダウンロードする．
+		<pre class='prettyprint'>
+$ sudo dpkg -i libcudnn7_7.6.5.32-1+cuda10.0_amd64.deb
+$ sudo dpkg -i libcudnn7-dev_7.6.5.32-1+cuda10.0_amd64.deb 
+$ sudo dpkg -i libcudnn7-doc_7.6.5.32-1+cuda10.0_amd64.deb </pre>
+		<h3>Tensorflowのインストール</h3>
+		<pre class='prettyprint'>$ pip install tensorflow-gpu==1.13.1</pre>
+		<a>また，numpyのバージョンが合わないときがあり，その際は入れ直す必要がある．(importしたときに警告文がでる．)</a>
+		<pre class='prettyprint'>
+$ pip uninstall numpy
+$ pip install numpy==1.16.4</pre>
+        <a>最後にpython上でimportしてみて警告が出なければOK</a>
 	</main>
 </body>
