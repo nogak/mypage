@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<a lang="ja">
 
 <head>
 	<meta charset="UTF-8">
@@ -21,34 +21,34 @@
 		<ul>
 			<li>ディレクトリ名を英語表記に変更</li>
 			<li>caps ctrlの変更</li>
-			<li>autokeyの設定</li>
 		</ul>
 		<h3>入れるソフトウェア</h3>
 		<ul>
-			<li>terminator　ウィンドウ分割できるターミナル</li>
+			<li>terminator</li>
 			<li>chrome</li>
-			<li>conky　内部の情報監視ツール(gnome-system-monitor起動するのだるいから)</li>
-			<li>vscode　使用エディタ</li>
+			<li>conky</li>
+			<li>vscode</li>
+			<li>autokeyの設定</li>
 			<li>git</li>
 			<li>ros</li>
 			<li>vim</li>
 		</ul>
 		<h3>ディレクトリ名を英語表記に変更</h3>
-		<pre class='prettyprint lang-js'>$ env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update</pre>
+		<pre class='prettyprint'>$ env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update</pre>
 		<a>気が向いたら機会学習の環境構築について書くかも</a><br>
 		<a>cudaとかtensorflowとかyoloとか</a>
 
 		<h2 class="section-title-short">キーバインドの変更</h2>
 		<a>例としてHomeをBackSpaceに置き換える</a>
-		<pre class='prettyprint lang-js'>$ xev</pre>
+		<pre class='prettyprint'>$ xev</pre>
 		<a>変更したいキーのkeycodeを確認できる</a>
-		<pre class='prettyprint lang-js'>$ xmodmap -pke</pre>
+		<pre class='prettyprint'>$ xmodmap -pke</pre>
 		<a>対応させたいキーの書き方を確認できる</a><br>
 		<a>(例)</a>
-		<pre class='prettyprint lang-js'>$ xmodmap -pke | grep Home</pre>
-		<pre class='prettyprint lang-js'>$ xmodmap -pke | grep 110</pre>
+		<pre class='prettyprint'>$ xmodmap -pke | grep Home</pre>
+		<pre class='prettyprint'>$ xmodmap -pke | grep 110</pre>
 		<h3>適応させる</h3>
-		<pre class='prettyprint lang-js'>$ xmodmap -e 'keycode 110 = BackSpace'</pre>
+		<pre class='prettyprint'>$ xmodmap -e 'keycode 110 = BackSpace'</pre>
 		<a>動作することを確認したら、後はこれをログインシェルなどに書き込めばOK</a>
 		
 		<h2 class="section-title-long">ubuntu18.04で日本語入力に切り替える</h2>
@@ -56,11 +56,31 @@
 		<h2 class="section-title-short">ログインループ時の対処</h2>
 		<p>CUIモードでログインする（ctrl + alt + F1）</p>
 		<p>GPUの型番を調べて，そのグラボにあったnvdiaドライバを入れて再起動する．</p>
-		<pre class='prettyprint lang-js'>
+		<pre class='prettyprint lang-bash'>
 $ sudo add-apt-repository ppa:graphics-drivers/ppa -y
 $ sudo apt-get update
 $ sudo apt-get install nvidia-***
 $ sudo reboot
 </pre>
+		<h2 class="section-title-short">python virtualenv関連</h2>
+		<h3>仮想環境の作成</h3>
+		<a>深層学習の環境は仮想環境上に構築したほうがいいらしい．（切り替えが楽だし，バージョン依存の問題の際に対処しやすいからとか？）</a><br>
+		<a>Dockerも試してみたいけど放置中．．．</a><br>
+		<a>(例)python3.6の環境作成</a>
+		<pre class='prettyprint'>$ virtualenv -p python3.6 py3.6env</pre>
+        <ul>
+			<li>-p : 仮想環境のインタープリタのバージョンを指定するオプション</li>
+			<li>python3.6 : pythonのバージョン名</li>
+			<li>py3.6env : 環境名(自分がわかるような名前をつける)</li>
+		</ul>
+		<h3>環境の有効化(ubuntu)</h3>
+		<a>.bashrcにaliasを書いておくと楽になります．</a>
+		<pre class='prettyprint'>$ source /home/$USER/00_program/py3.6env/bin/activate</pre>
+		<a>※linux以外のOSのアクティベートファイルもbin/以下にあります．</a><br>
+		<h3>環境から出る</h3>
+		<pre class='prettyprint'>$ deactivate</pre>
+		<h2 class="section-title-short">機械学習環境の構築</h2>
+		<a>必ずcuda，cudnn，tensorflowのバージョン関係のチェックをすること．最新のcudaを入れるとバージョンを下げることになることが多いです．また，numpyのバージョンが合わないときがあり，その際は入れ直す必要がある．(importしたときに警告文がでる．)</a>
+		<h3>
 	</main>
 </body>
