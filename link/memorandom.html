@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<a lang="ja">
+<html lang="ja">
 
 <head>
 	<meta charset="UTF-8">
-	<title>タイトル</title>
+	<title>ubuntuメモ</title>
 	<link rel="stylesheet" href="../stylesheet.css">
 	<script async
 		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
 </head>
 
 <body>
-	<header>備忘録</header>
+	<header>ubuntuメモ</header>
 	<main>
 		<dvi class="right">
 			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
 		</dvi>
-		<h1>ubuntuメモ</h1>
+		<h1>ubuntu関連の備忘録</h1>
 		<h2 class="section-title-short">環境構築</h2>
 		<h3>やる操作一覧</h3>
 		<ul>
@@ -75,8 +75,8 @@ $ sudo reboot
 		</ul>
 		<h3>環境の有効化(ubuntu)</h3>
 		<a>.bashrcにaliasを書いておくと楽になります．</a>
-		<pre class='prettyprint'>$ source /home/$USER/00_program/py3.6env/bin/activate</pre>
-		<a>※linux以外のOSのアクティベートファイルもbin/以下にあります．</a><br>
+		<pre class='prettyprint'>$ source /home/$USER/00_program/virtualenv/py3.6env/bin/activate</pre>
+		<a>※仮想環境名(py3.6env)より上のパスは個人の環境により異なります．また，linux以外のOSのアクティベートファイルもbin/以下にあります．</a><br>
 		<h3>環境から出る</h3>
 		<pre class='prettyprint'>$ deactivate</pre>
 
