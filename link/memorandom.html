@@ -96,7 +96,12 @@ $ sudo dpkg -i libcudnn7_7.6.5.32-1+cuda10.0_amd64.deb
 $ sudo dpkg -i libcudnn7-dev_7.6.5.32-1+cuda10.0_amd64.deb 
 $ sudo dpkg -i libcudnn7-doc_7.6.5.32-1+cuda10.0_amd64.deb </pre>
 		<h3>Tensorflowのインストール</h3>
-		<pre class='prettyprint'>$ pip install tensorflow-gpu==1.13.1</pre>
+		<pre class='prettyprint'>
+# tensorflow 1.xx系
+$ pip install tensorflow-gpu==1.13.1
+# tensorflow 2.xx系
+$ pip install tensorflow-gpu==2.0.0
+</pre>
 		<a>また，numpyのバージョンが合わないときがあり，その際は入れ直す必要がある．(importしたときに警告文がでる．)</a>
 		<pre class='prettyprint'>
 $ pip uninstall numpy
