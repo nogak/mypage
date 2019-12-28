@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>ネットワーク関連</title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<header>ネットワークメモ</header>
+	<main>
+		<dvi class="right">
+			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
+		</dvi>
+		<h1>ラズパイ関連</h1>
+		<h2 class="section-title-short">SSH接続</h2>
+		<a>接続コマンド</a>	
+		<pre class='prettyprint'>$ ssh pi@IPアドレス</pre>
+		<p>または</p>
+		<pre class='prettyprint'>$ ssh -l pi IPアドレス</pre>
+		<h3>やる操作</h3>
+		<ul>
+			<li>サーバーに接続するクライアントでSSH鍵を生成</li>
+			<li>生成したSSH鍵をラズパイ側に登録</li>
+		</ul>
+		<h3>SSH鍵の生成</h3>
+		<pre class='prettyprint'>$ ssh-keygen -t rsa</pre>
+		<a>これにより，ホームディレクトリに.sshというディレクトリが生成され，その中に"id_rsa"，"id_rsa.pub"というファイルが生成される．</a>
+		<ul>
+			<li>id_rsa : 秘密鍵</li>
+			<li>id_rsa.pub : 公開鍵</li>
+			<li>-t : 鍵タイプの指定オプション</li>
+			<li>rsa : 使用する鍵タイプ（rsa暗号）</li>
+		</ul>
+		<a>※ここでパスワードの入力が求められるが，毎回サーバーにログインする際にパスワードを入れることになるので，それがいやな場合は何も入力しないでEnterを押す．</a>
+		<h3>SSH鍵をラズパイ側に登録</h3>
+		<p>生成したid_rsa.pubをラズパイのディレクトリのどこかに保存する．（今回はDocuments下に置いたとする）</p>
+		<p>すでにSSH接続できる（パズワードでログインできるとか，他のpcでできる）場合にはそちらのpcにファイルを移して以下のコマンドでラズパイ側に送ることもできる．</p>
+		<pre class='prettyprint'>$ scp -P 22 /home/"username"/.ssh/id_rsa.pub pi@192.168.xx.x:/home/pi/Documents</pre>
+		<ul>
+			<li>-P : ポート番号の指定オプション</li>
+			<li>22 : 指定したポート番号</li>
+			<li><a href="https://qiita.com/rock619/items/2bbbe379ae0fdd2ae00f">scpコマンドチートシート</a></li>
+		</ul>
+		<a>また，パスワードを聞かれたらデフォルトの場合には"raspberry"を入力する．</a>
+		<a>あとはラズパイ側で以下のコマンドを実行すればOK．</a>
+		<pre class='prettyprint'>$ cat /home/pi/Documents/id_rsa.pub >> /home/pi/.ssh/authorized_keys</pre>
+	</main>
+</body>
