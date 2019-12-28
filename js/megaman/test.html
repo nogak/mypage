@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>canvasで図形を描く</title>
+<script type="text/javascript">
+<!--
+//Imageオブジェクトを生成して、画像ファイルを先読みしておく
+var img01 = new Image();
+img01.src = "images/imageLicenseLogo.png";
+
+function test() {
+  //描画コンテキストの取得
+  var canvas = document.getElementById('sample');
+  if (canvas.getContext) {
+    var context = canvas.getContext('2d');
+    //座標(10, 10)の位置にイメージを表示
+    context.drawImage(img01, 10, 10);
+  }
+}
+//-->
+</script>
+</head>
+<body onLoad="test()">
+<h2>Canvasで図形を描く</h2>
+<canvas width="300" height="150" id="sample" style="background-color:yellow;">
+図形を表示するには、canvasタグをサポートしたブラウザが必要です。
+</canvas>
+</body>
+</html>
