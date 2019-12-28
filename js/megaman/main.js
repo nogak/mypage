@@ -20,8 +20,8 @@ function draw_field(){
     // var img = new Image();
     // img.src = "images/battele_field/Panels.png"
     var context = canvas.getContext('2d');
-    context.drawImage(img ,0, 0, 240/6, 160/2, 0, canvas.height-160,canvas.width/6, canvas.height/2)
-    context.drawImage(img ,0, 0, 240/6, 160/2, 0, canvas.height-160,canvas.width/6, canvas.height/2)
+    context.drawImage(img_battle_field ,0, 0, 240/6, 160/2, 0, canvas.height-160,canvas.width/6, canvas.height/2)
+    // context.drawImage(img ,0, 0, 240/6, 160/2, 0, canvas.height-160,canvas.width/6, canvas.height/2)
 }
 
 function draw_grid(){
