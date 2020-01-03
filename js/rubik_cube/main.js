@@ -170,6 +170,39 @@ function start_shuffle(){
     }
 }
 
+function draw_mode(){
+    const width = 80;
+    const height = 30;
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "white";
+    ctx.fillRect(ctx.lineWidth/2, ctx.lineWidth/2, width, height);
+    ctx.strokeRect(ctx.lineWidth/2, ctx.lineWidth/2, width, height);
+
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    if(select_mode == 0){
+        ctx.fillText("Easy", (width+ctx.lineWidth/2)/2, 25);
+    }else if(select_mode == 1){
+        ctx.fillText("Normal", (width+ctx.lineWidth/2)/2, 25);
+    }else{
+        ctx.fillText("Hard", (width+ctx.lineWidth/2)/2, 25);
+    }
+
+    // if(player_HP < player_HP_draw - loop_counter_damage && flag_draw_damege){
+        // ctx.fillText("HP:"+(player_HP_draw-loop_counter_damage), (width+ctx.lineWidth/2)/2, 25);
+        // loop_counter_damage++;
+    // }else{
+        // ctx.fillText("HP:"+player_HP, (width+ctx.lineWidth/2)/2, 25);
+        // loop_counter_damage = 0;
+        // flag_draw_damege = false;
+    // }
+    ctx.closePath();
+    ctx.stroke();
+}
+
 function draw_grid(){
     ctx.beginPath();
     ctx.lineWidth = 1;
@@ -784,6 +817,7 @@ function draw(){
     }
     draw_cursor();
     move_cursor();
+    draw_mode();
     // select_target();
     start_shuffle();
     rotate();
