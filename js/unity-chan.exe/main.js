@@ -2,6 +2,11 @@
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
+const context = canvas.getContext`2d`
+context.imageSmoothingEnabled
+= context.msImageSmoothingEnabled
+= context.webkitImageSmoothingEnabled = false
+
 ctx.lineWidth = 1;
 
 let frame_counter = 0;
