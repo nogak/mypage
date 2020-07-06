@@ -17,11 +17,58 @@
 		</dvi>
 		<h1>サービスの停止</h1>
 		例
-		<pre class='prettyprint lang-js'>$ rosservice call /viewpoint_controller/stop "{}"</pre>
+		<pre class='prettyprint lang-bash'>$ rosservice call /viewpoint_controller/stop "{}"</pre>
 		<h1>tfの座標変換の注意</h1>
 		<ul>
 			<li>listerは何回も作成させない(classやstaticなどで作って保持しないと過去の時間との同期が取れない)</li>
 		</ul>
+
+		<h1>rostopic関連</h1>
+		<h2>ヘルプオプションでサブコマンドを確認</h2>
+		<pre class='prettyprint lang-bash'>$ rostopic -h</pre>
+<pre class='prettyprint lang-bash'>
+rostopic bw     トピックで使用されている帯域を表示する
+rostopic echo   スクリーンにメッセージを出力する
+rostopic find   メッセージの型からトピックを探す
+rostopic hz     トピックの配信頻度を表示する
+rostopic info   アクティブなトピックについての情報を出力する 
+rostopic list   アクティブなトピックをリスト表示する
+rostopic pub    トピックへデータを配信する
+rostopic type   トピックの型を出力する</pre>
+
+		<h2>使い方例（いろいろ）</h2>
+		<ul>
+            <li><p>配信されてるデータの確認</p></li>
+			<pre class='prettyprint lang-bash'>$ rostopic echo [topic名]</pre>
+			
+            <li><p>現在配信しているトピック一覧を表示</p></li>
+            <pre class='prettyprint lang-bash'>$ rostopic list</pre>
+			<p>※-hオプションをつけるとlistのサブコマンドを確認できる</p>
+			
+			<li>メッセージ型の確認</li>
+            <pre class='prettyprint lang-bash'>$ rostopic type [topic名]</pre>
+			
+			<li>現在立ち上がっているトピックへ配信</li>
+			<pre class='prettyprint lang-bash'>$ rostopic pub [topic名] [msg_type] [args]</pre>
+		</ul>
+
+		<h1>git関連</h1>
+		<h2>リモートのブランチを確認</h2>
+		<pre class='prettyprint lang-bash'>$ git branch -r</pre>
+		
+		<h2>ローカルでリモートのブランチを更新</h2>
+		<p>イマイチわからん</p>
+		<pre class='prettyprint lang-bash'>$ git remote update -p</pre>
+		
+		<h2>リモートのブランチをローカルに反映</h2>
+		<pre class='prettyprint lang-bash'>
+$ git checkout -b <ローカルのブランチ名> <ローカルに反映したいリモートのブランチ名>
+
+<例>
+$ git checkout -b code_organize origin/code_organize</pre>
+
+		
+		<pre class='prettyprint lang-bash'>$ git remote update -p</pre>
 	</main>
 	<!--<footer>footer</footer>-->
 </body>
