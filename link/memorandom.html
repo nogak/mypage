@@ -17,22 +17,37 @@
 		</dvi>
 		<h1>ubuntu関連の備忘録</h1>
 		<h2 class="section-title-short">環境構築</h2>
-		<h3>やる操作一覧</h3>
-		<ul>
-			<li>ディレクトリ名を英語表記に変更</li>
-			<li>caps ctrlの変更</li>
-		</ul>
-		<h3>入れるソフトウェア</h3>
-		<ul>
-			<li>terminator</li>
-			<li>chrome</li>
-			<li>conky</li>
-			<li>vscode</li>
-			<li>autokey</li>
-			<li>git</li>
-			<li>ros</li>
-			<li>vim</li>
-		</ul>
+		
+		<div onclick="obj=document.getElementById('open1').style; obj.display=(obj.display=='none')?'block':'none';">
+			<a style="cursor:pointer;">
+				<h3>▼やる操作一覧</h3>
+			</a>
+		</div>
+        <div id="open1" style="display:none;clear:both;">
+            <ul>
+                <li>ディレクトリ名を英語表記に変更</li>
+                <li>caps ctrlの変更</li>
+            </ul>
+		</div>
+		
+		<div onclick="obj=document.getElementById('open2').style; obj.display=(obj.display=='none')?'block':'none';">
+            <a style="cursor:pointer;">
+                <h3>▼入れるソフトウェア</h3>
+            </a>
+        </div>
+        <div id="open2" style="display:none;clear:both;">
+            <ul>
+                <li>terminator</li>
+                <li>chrome</li>
+                <li>conky</li>
+                <li>vscode</li>
+                <li>autokey</li>
+                <li>git</li>
+                <li>ros</li>
+                <li>vim</li>
+            </ul>
+        </div>
+            
 		<h3>ディレクトリ名を英語表記に変更</h3>
 		<pre class='prettyprint'>$ env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update</pre>
 		<a>気が向いたら機会学習の環境構築について書くかも</a><br>
@@ -106,6 +121,40 @@ $ pip install tensorflow-gpu==2.0.0
 		<pre class='prettyprint'>
 $ pip uninstall numpy
 $ pip install numpy==1.16.4</pre>
-        <a>最後にpython上でimportしてみて警告が出なければOK</a>
+		<a>最後にpython上でimportしてみて警告が出なければOK</a>
+		
+		<h2 class="section-title-short">cronの使い方</h2>
+		<a>参考：</a>
+		<a href="https://qiita.com/UNILORN/items/a1a3f62409cdb4256219">Cronの使い方とテクニックと詰まったところ</a>
+		<h3 class="section-title-short">設定ファイルの構成</h3>
+		<h3>cron.d</h3>
+		<a>このディレクトリに入っている拡張子のないファイルが実行される．</a>
+		<a>普段はここの中にファイルを作成して操作する．</a>
+		<h3>cron.**</h3>
+		<a>時間，日，月毎などで実行しやすいように作成されている．</a>
+		<h3>crontab</h3>
+		<a>一番メインのファイル．</a>
+		<h3 class="section-title-short">コマンド</h3>
+		<h3>状態の確認</h3>
+		<pre class='prettyprint'>$ sudo service cron status</pre>
+		<h3>起動，停止</h3>
+		<pre class='prettyprint'>
+$ sudo service cron start
+$ sudo service cron stop</pre>
+		<h3 class="section-title-short">設定ファイルの書き方</h3>
+		<a>例</a>
+		<pre class='prettyprint'>
+# m h dom mon dow user  command
+分　時　日　月　曜日 ユーザー　コマンド
+# 1分ごと
+* *    * * *  root   touch /home/ubuntu/test.txt
+# 1:00〜1:59まで1分ずつ実行
+* 1    * * *  root   touch /home/ubuntu/test.txt
+# 毎日1:00に実行
+0 1    * * *  root   touch /home/ubuntu/test.txt
+# 毎月12日~20日00:00に実行
+0 0    12-20 * *  root   touch /home/ubuntu/test.txt
+# 毎週月曜日〜金曜日00:00に実行
+0 0    * * 1-5  root   touch /home/ubuntu/test.txt</pre>
 	</main>
 </body>

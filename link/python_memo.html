@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>pythonメモ</title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<header>pythonメモ</header>
+	<main>
+		<dvi class="right">
+			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
+		</dvi>
+		<h1>OpenCV関連</h1>
+		<a>参考：</a>
+		<a href="https://cartman0.hatenablog.com/entry/2020/01/27/SIFT%2C_SURF%E3%81%8C%E5%88%A9%E7%94%A8%E3%81%A7%E3%81%8D%E3%82%8BPython%E7%94%A8OpenCV%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B">SIFT, SURFが利用できるPython用OpenCVをインストールする</a>
+		<h2 class="section-title-short">2種類あるよ</h2>
+		<ul>
+			<li>opencv-python : メインモジュールのみ</li>
+			<li>opencv-contlib-python : メインモジュール＋contlibモジュール（SIFT, SURF, CUDA関連などを使う場合必要）</li>
+		</ul>
+		<a>各モジュールは以下で確認可能．</a><br>
+		<a href="https://docs.opencv.org/master/">https://docs.opencv.org/master/</a>
+		<h3>pipでインストール</h3>
+		<pre class='prettyprint'>
+$ pip install opencv-contrib-python
+$ pip install opencv-python</pre>
+		<h2 class="section-title-long">バージョンやモジュールをpython上で確認</h2>
+		<pre class='prettyprint lang-py'>
+import cv2
+cv2.__version__ # バージョン確認
+dir(cv2.ml) # mlモジュールの確認
+</pre>
+	</main>
+</body>
