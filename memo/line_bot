@@ -1,0 +1,35 @@
+参考：https://qiita.com/shimajiri/items/cf7ccf69d184fdb2fb26
+
+line developers に登録 (https://developers.line.biz/ja/services/messaging-api/)
+・アプリ名：任意
+・プラン：developer trial
+
+・チャンネル基本設定->メッセージ送受信設定のアクセストークンの再発行ボタンを押す
+・Bot情報のLINEアプリへのQRコードで友達登録しておく
+
+pyhon側
+
+pip install flask
+pip install line-bot-sdk
+
+
+サーバーはお家のラズパイを使う予定
+→やっぱりheroku使ってみる
+
+heroku create linebot-nogami
+heroku config --app linebot-nogami
+git init
+git add .
+git commit -m "first commit"
+git push heroku master
+heroku logs --tail
+
+
+heroku config:set YOUR_CHANNEL_ACCESS_TOKEN="【LineDevelopersのChannelの設定ページで表示されたAccessトークン】" --app 【アプリケーション名】
+heroku config:set YOUR_CHANNEL_SECRET="【LineDevelopersのChannelの設定ページで表示されたSECRET】" --app 【アプリケーション名】
+
+当月のメッセージ利用状況を取得
+curl -v -X GET https://api.line.me/v2/bot/message/quota/consumption -H 'Authorization: Bearer {channel access token}'
+
+# メッセージの中身(body)
+{"events":[{"type":"message","replyToken":"4810c02c558b4efd921484336d9a7472","source":{"userId":"U790019b51630e24ff268f2346e6a0e95","type":"user"},"timestamp":1596879019656,"mode":"active","message":{"type":"text","id":"12463127398569","text":"あ"}}],"destination":"Ue4d28c1e6456b7d76ce440b7d3fddfd5"}
