@@ -75,8 +75,8 @@ $ heroku config:set YOUR_CHANNEL_ACCESS_TOKEN="【LineDevelopersのChannelの設
 $ heroku config:set YOUR_CHANNEL_SECRET="【LineDevelopersのChannelの設定ページで表示されたSECRET】" --app 【アプリケーション名】</pre>
 		<a>きちんと設定できたか確認</a>
 		<pre class='prettyprint'>$ heroku config --app 自分のアプリケーション名</pre>
-		<a>例</a>
-		<pre class='prettyprint'>$ heroku config --app linebot-nogami
+		<a>出力例</a>
+		<pre class='prettyprint'>
 ›   Warning: heroku update available from 7.42.4 to 7.42.6.
 === linebot-nogami Config Vars
 YOUR_CHANNEL_ACCESS_TOKEN: ***********
@@ -95,6 +95,7 @@ $ git add
 $ git commit -m "first commit"
 $ git push heroku master</pre>
 		<a>これで不具合がなければおしまい．</a><br>
+		<a>おうむ返しと注文管理しかしてないけどなかなか面白いです．</a>
 		<img src="./../image/line_bot/sample01.png" height="500"><br>
 		<h2 class="section-title-short">ログの確認</h2>
 		<pre class='prettyprint'>$ heroku logs --tail</pre>
@@ -193,6 +194,12 @@ def handle_message(event):
 if __name__ == "__main__":
 #    app.run()
     port = int(os.getenv("PORT"))
-    app.run(host="0.0.0.0", port=port)</pre>
+	app.run(host="0.0.0.0", port=port)</pre>
+	<h2>参考</h2>
+	<ul>
+		<li><a href="https://qiita.com/shimajiri/items/cf7ccf69d184fdb2fb26">https://qiita.com/shimajiri/items/cf7ccf69d184fdb2fb26</a></li>
+		<li><a href="https://uepon.hatenadiary.com/entry/2018/07/27/002843">https://uepon.hatenadiary.com/entry/2018/07/27/002843</a></li>
+		<li><a href="https://qiita.com/kotamatsuoka/items/472b455e5f9a6315d499">https://qiita.com/kotamatsuoka/items/472b455e5f9a6315d499</a></li>
+	</ul>
 	</main>
 </body>
