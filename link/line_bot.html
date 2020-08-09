@@ -48,7 +48,9 @@
 
 		<h2 class="section-title-short">Procfile</h2>
 		<a>プログラムの実行方法を定義</a>
-		<pre class='prettyprint'>$ web: python main.py</pre>
+		<pre class='prettyprint'>
+// Procfile
+web: python main.py</pre>
 		
 		<h2 class="section-title-short">main.py</h2>
 		<a>プログラムのスクリプトファイル</a>
@@ -57,6 +59,7 @@
 		<a>使用するライブラリを記述<br>
 		ローカル環境でpipで入れる代わりにここに記入</a>
 		<pre class='prettyprint'>
+// requirements.txt
 flask==1.1.2
 line-bot-sdk==1.6.0
 gunicorn</pre>
@@ -194,7 +197,7 @@ def handle_message(event):
 if __name__ == "__main__":
 #    app.run()
     port = int(os.getenv("PORT"))
-	app.run(host="0.0.0.0", port=port)</pre>
+    app.run(host="0.0.0.0", port=port)</pre>
 	<h2>参考</h2>
 	<ul>
 		<li><a href="https://qiita.com/shimajiri/items/cf7ccf69d184fdb2fb26">https://qiita.com/shimajiri/items/cf7ccf69d184fdb2fb26</a></li>
