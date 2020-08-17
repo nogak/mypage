@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>pythonメモ</title>
+	<link rel="stylesheet" href="../../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<header>LINE botで遊ぼう！（ラズパイ編）</header>
+	<main>
+		<dvi class="right">
+			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
+		</dvi>
+		<h1>はじめに</h1>
+		<a>　Herokuを使った公開の方では，push先の登録処理(ユーザIDをjsonで記録)が行えなかったため，お家に転がってたラズパイzeroをサーバに使います．</a><br><br>
+		<a>※Herokuだと30分アクセスがない場合に自動的に停止するようになっていて，再度アクセスがあった時に新しくプログラムが起動する？のでメモリに格納していた変数が全てリセットされます．24時間停止しないようにすることもできますが，月の無料時間をオーバーする可能性があるのでやめました．(クレカ登録をすると無料時間が増えるので1つのサービスだけの場合は無料でできそうです．)
+		</a>
+
+		<h1>事前準備</h1>
+		<ul>
+			<li>ラズパイ</li>
+			<li>ngrokのアカウント</li>
+			<li>LINE developersの登録</li>
+			<li>python環境</li>
+		</ul>
+
+		<h2 class="section-title-short">LINE developersの登録</h2>
+		<a>以下から登録</a><br>
+		<a href="https://developers.line.biz/ja/services/messaging-api/">https://developers.line.biz/ja/services/messaging-api/</a><br>
+		<a>登録が済んだら，Basic settingsの下のところにある'Channel secret'とMessaging APIの下のところにある'Channel access token'の文字列をひかえる．(Channel access tokenはissueをクリックして生成)</a>
+
+		<h1>ラズパイ関連</h1>
+		<a>OSインストール，ポート設定などは割愛</a><br>
+		
+		<h2 class="section-title-short">ラズパイの設定</h2>
+		<h3>環境変数の設定</h3>
+		<a>.bashrcに環境変数を記入(Herokuのときと名前を変えました)</a>
+		<pre class='prettyprint'>
+$ export LINE_BOT_ACCESS_TOKEN="【LineDevelopersのChannelの設定ページで表示されたAccessトークン】"
+$ export LINE_BOT_CHANNEL_SECRET="【LineDevelopersのChannelの設定ページで表示されたSECRET】"</pre>
+		<a>変更を読み込み</a>
+		<pre class='prettyprint'>$ source ~/.bashrc</pre>
+		
+		<h2 class="section-title-short">ngrok</h2>
+		<a>LINE botのWebhook設定をする際にhttps通信でなければいけないのでngrokというサービスを使います．<br>
+		(最初はopensslを使ってやろうとしたのですが無料の証明書だと弾かれる？みたいだったので．．</a>
+		<ul>
+			<li>アカウントを作成</li>
+			<li>ラズパイにngrokをインストール</li>
+			<li>ログイン後，左上メニューから「Authentication」の「Your Authtoken」を選択し，コピー</li>
+			<li>ラズパイでホームディレクトリに移動し，以下のコマンドを実行</li>
+			<pre class='prettyprint'>$ ngrok authtoken 【Your Authtokenの文字列】</pre>
+		</ul>
+
+		<h1>LINE bot関連</h1>
+		<h2 class="section-title-short">Webhookの設定</h2>
+		<a>Webhook URL : https://"ngrokで設定された文字列"/callback<br>
+			とすればOK(文字列のところは後述のデプロイを参照)</a><br>
+			※後ろの/callbackのところは適宜自分のプログラムに合わせて変更してください<br>
+		<a>あとは，初期設定されてる余計な返答の無効化などすると良いとおもいます．</a>
+
+		<h1>デプロイ</h1>
+		<ul>
+			<li>ラズパイの方でHerokuでpushしていたようにmain.pyを用意して実行</li>
+			<li>main.py実行後，以下のコマンドでngrokで生成されたhttpsのURLをLINE botのWebhookに設定すればOK</li>
+			<pre class='prettyprint'>$ ngrok http 【ポート番号】</pre>
+		</ul>
+		<a>※依存するライブラリを入れておく必要があります．</a><br><br>
+
+		<a>これで不具合がなければおしまい．</a><br>
+	<h2>参考</h2>
+	<ul>
+		<li><a href="https://qrunch.net/@nokonoko1203/entries/383lwnKrCpMWdgLC">https://qrunch.net/@nokonoko1203/entries/383lwnKrCpMWdgLC</a></li>
+	</ul>
+	</main>
+</body>

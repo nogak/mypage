@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>pythonメモ</title>
-	<link rel="stylesheet" href="../stylesheet.css">
+	<link rel="stylesheet" href="../../stylesheet.css">
 	<script async
 		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
 </head>
@@ -22,6 +22,9 @@
 
 
 		<h1>事前準備</h1>
+		<a>本ページではHerokuのサービスを使って公開しますが，後になって問題が発生したためお家のラズパイをサーバにした方も以下のリンクに記します．</a><br>
+		<a href="./line_bot2.html">ラズパイサーバで公開編</a><br>
+		<a>※静的な処理のみであれば，本ページの方法で問題ないと思います．</a>
 		<ul>
 			<li>git</li>
 			<li>Herokuアカウント</li>
@@ -44,7 +47,7 @@
 		
 		<h1>Heroku関連</h1>
 		<a>今回の最小構成だとこのようになります．</a>
-		<img src="./../image/line_bot/0001.png" height="200"><br>
+		<img src="./../../image/line_bot/0001.png" height="200"><br>
 
 		<h2 class="section-title-short">Procfile</h2>
 		<a>プログラムの実行方法を定義</a>
@@ -88,6 +91,7 @@ YOUR_CHANNEL_SECRET:       ***********</pre>
 		<h2 class="section-title-short">Webhookの設定</h2>
 		<a>Webhook URL : https://アプリケーション名.herokuapp.com/callback<br>
 			とすればOK</a><br>
+			※後ろの/callbackのところは適宜自分のプログラムに合わせて変更してください<br>
 		<a>あとは，初期設定されてる余計な返答の無効化などすると良いとおもいます．</a>
 
 		<h1>デプロイする</h1>
