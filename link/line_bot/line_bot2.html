@@ -40,14 +40,14 @@
 		<h3>環境変数の設定</h3>
 		<a>.bashrcに環境変数を記入(Herokuのときと名前を変えました)</a>
 		<pre class='prettyprint'>
-$ export LINE_BOT_ACCESS_TOKEN="【LineDevelopersのChannelの設定ページで表示されたAccessトークン】"
-$ export LINE_BOT_CHANNEL_SECRET="【LineDevelopersのChannelの設定ページで表示されたSECRET】"</pre>
+export LINE_BOT_ACCESS_TOKEN="【LineDevelopersのChannelの設定ページで表示されたAccessトークン】"
+export LINE_BOT_CHANNEL_SECRET="【LineDevelopersのChannelの設定ページで表示されたSECRET】"</pre>
 		<a>変更を読み込み</a>
 		<pre class='prettyprint'>$ source ~/.bashrc</pre>
 		
 		<h2 class="section-title-short">ngrok</h2>
 		<a>LINE botのWebhook設定をする際にhttps通信でなければいけないのでngrokというサービスを使います．<br>
-		(最初はopensslを使ってやろうとしたのですが無料の証明書だと弾かれる？みたいだったので．．</a>
+		(最初はopensslを使ってやろうとしたのですが無料の証明書だと弾かれる？みたいだったので．．)</a>
 		<ul>
 			<li>アカウントを作成</li>
 			<li>ラズパイにngrokをインストール</li>
