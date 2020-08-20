@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>vscodeでtex環境を作る</title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<header>tex環境を作ろう</header>
+	<main>
+		<dvi class="right">
+			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
+		</dvi>
+		<h1>はじめに</h1>
+		<a>vscodeでtexを編集する環境が充実してそうなので入れてみました．<br>
+			プレビューがすぐに反映されるので良いです．</a>	
+		<h1>入れるもの</h1>
+		<ul>
+			<li>latex環境(texlive)</li>
+			<li>vscode</li>
+			<li>LaTeX workshop(vscodeの拡張)</li>
+		</ul>
+		<h2 class="section-title-short">LaTeX環境の構築</h2>
+		<pre class='prettyprint'>
+$ sudo apt update
+$ sudo apt upgrade</pre>
+		<h3>LaTeXのインストール</h3>
+		<pre class='prettyprint'>
+$ sudo apt install texlive-lang-cjk xdvik-ja evince
+$ sudo apt install texlive-fonts-recommended texlive-fonts-extra</pre>
+		<h3>デフォルトでの使い方</h3>
+		<pre class='prettyprint'>
+$ platex hoge.tex
+$ dvipdfmx hoge.dvi</pre>
+        <a>コンパイルされたpdfを閲覧する際に，evinceを使用するとpdfを開いたまま再コンパイルできるらしい．
+<pre class='prettyprint'>$ evince hoge.pdf &</pre></a>
+
+		<h2 class="section-title-short">.latexmkrcの設定</h2>
+		<a>~/.latexmkrcを作成し以下のように記述<br>
+		※設定内容は参考をそのまま使用</a>
+		<pre class='prettyprint'>
+#!/usr/bin/env perl
+
+# LaTeX
+$latex = 'platex -synctex=1 -halt-on-error -file-line-error %O %S';
+$max_repeat = 5;
+
+# BibTeX
+$bibtex = 'pbibtex %O %S';
+$biber = 'biber --bblencoding=utf8 -u -U --output_safechars %O %S';
+			
+# index
+$makeindex = 'mendex %O -o %D %S';
+
+# DVI / PDF
+$dvipdf = 'dvipdfmx %O -o %D %S';
+$pdf_mode = 3;
+
+# preview
+$pvc_view_file_via_temporary = 0;
+if ($^O eq 'linux') {
+    $dvi_previewer = "xdg-open %S";
+    $pdf_previewer = "xdg-open %S";
+} elsif ($^O eq 'darwin') {
+    $dvi_previewer = "open %S";
+    $pdf_previewer = "open %S";
+} else {
+    $dvi_previewer = "start %S";
+    $pdf_previewer = "start %S";
+}
+
+# clean up
+$clean_full_ext = "%R.synctex.gz"</pre>
+
+		<h3>latexmkが入ってない場合</h3>
+		<a>texliveと一緒に入るらしいのですが，入ってない場合にはaptで入れちゃえば大丈夫だと思います．<br>
+		(僕はそうしましたが今のところ問題ありません)</a>
+		<pre class='prettyprint'>$ sudo apt install latexmk</pre>
+
+		<h2 class="section-title-short">vscodeの設定</h2>
+		<a>vscodeにLaTeX workshopを入れたら，setting.jsonに以下のような設定を追加</a><br>
+		<a>※参考ページの設定をそのまま使わせていただきました．</a>
+		<pre class='prettyprint'>
+"[tex]": {
+    // スニペット補完中にも補完を使えるようにする
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    // インデント幅を2にする
+    "editor.tabSize": 2
+},
+
+"[latex]": {
+    // スニペット補完中にも補完を使えるようにする
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    // インデント幅を2にする
+    "editor.tabSize": 2
+},
+
+"[bibtex]": {
+    // インデント幅を2にする
+    "editor.tabSize": 2
+},
+
+// ---------- LaTeX Workshop ----------
+
+// 使用パッケージのコマンドや環境の補完を有効にする
+"latex-workshop.intellisense.package.enabled": true,    
+	
+// 生成ファイルを削除するときに対象とするファイル
+// デフォルト値に "*.synctex.gz" を追加
+"latex-workshop.latex.clean.fileTypes": [
+    "*.aux",
+    "*.bbl",
+    "*.blg",
+    "*.idx",
+    "*.ind",
+    "*.lof",
+    "*.lot",
+    "*.out",
+    "*.toc",
+    "*.acn",
+    "*.acr",
+    "*.alg",
+    "*.glg",
+    "*.glo",
+    "*.gls",
+    "*.ist",
+    "*.fls",
+    "*.log",
+    "*.fdb_latexmk",
+    "*.snm",
+    "*.nav",
+    "*.dvi",
+    "*.synctex.gz"
+],
+    
+// 生成ファイルを "out" ディレクトリに吐き出す
+"latex-workshop.latex.outDir": "out",
+
+// ビルドのレシピ
+"latex-workshop.latex.recipes": [
+{
+    "name": "latexmk",
+    "tools": [
+    "latexmk"
+    ]
+},
+],
+
+// ビルドのレシピに使われるパーツ
+"latex-workshop.latex.tools": [
+{
+    "name": "latexmk",
+    "command": "latexmk",
+    "args": [
+    "-silent",
+    "-outdir=%OUTDIR%",
+    "%DOC%"
+    ],
+},
+]</pre>
+		<h3>独自のスニペットを登録</h3>
+		<a>vscode内の左下の歯車からユーザースニペットを選択，latexを選択するとlatex.jsonが生成される．<br>
+		そこにスニペットを定義する．(正直そんなにわかってないけど，こちらも参考ページの例を載せときます)</a>
+        <pre class='prettyprint'>
+{
+    "report": {
+        "prefix": "report",
+        "body": [
+        "\\documentclass[${1:a4paper,11pt}]{${2:jsarticle}}",
+        "",
+        "",
+        "% 数式",
+        "\\usepackage{amsmath,amsfonts}",
+        "\\usepackage{bm}",
+        "% 画像",
+        "\\usepackage[dvipdfmx]{graphicx}",
+        "${3}",
+        "",
+        "\\begin{document}",
+        "",
+        "\\title{${4}}",
+        "\\author{${5}}",
+        "\\date{${6:\\today}}",
+        "\\maketitle",
+        "",
+        "",
+        "$0",
+        "",
+        "",
+        "\\end{document}"
+        ],
+        "description": "授業レポート用テンプレート"
+    }
+}</pre>
+        <ul>
+			<li>最初の"report"keyは一意の文字列なら何でも良い</li>
+			<li>"prefix" : スニペットを呼び出すときの名前</li>
+			<li>"body" : スニペットの内容．リストの各要素はそれぞれ1行に展開される</li>
+		</ul>
+		<h1>実際に使ってみる</h1>
+		<ul>
+			<li>以下のtexファイルを作成しctrl+alt+bでビルド</li>
+			<li>ctrl+alt+vでプレビューを表示</li>
+		</ul>
+		<pre class='prettyprint'>
+// test.tex
+\documentclass{jarticle}
+\begin{document}
+
+これはサンプルです。
+
+\end{document}</pre>
+		<a>以下のようにプレビューが表示されればOK</a><br>
+		<img src="./../image/tex_env/test.png" width="700">
+		<h1>参考</h1>
+		<ul>
+			<li><a href="https://qiita.com/Gandats/items/d7718f12d71e688f3573">https://qiita.com/Gandats/items/d7718f12d71e688f3573</a></li>
+			<li><a href="https://pyteyon.hatenablog.com/entry/2019/12/24/225305#3-latexmkrc-%E3%81%AE%E4%BD%9C%E6%88%90%E7%B7%A8%E9%9B%86">https://pyteyon.hatenablog.com/entry/2019/12/24/225305#3-latexmkrc-%E3%81%AE%E4%BD%9C%E6%88%90%E7%B7%A8%E9%9B%86</a></li>
+		</ul>
+    </main>
+</body>
