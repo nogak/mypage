@@ -157,5 +157,20 @@ $ sudo service cron stop</pre>
 0 0    12-20 * *  root   touch /home/ubuntu/test.txt
 # 毎週月曜日〜金曜日00:00に実行
 0 0    * * 1-5  root   touch /home/ubuntu/test.txt</pre>
-	</main>
+        <h2 class="section-title-mid">不要のaptリポジトリの削除</h2>
+		<pre class='prettyprint'>
+$ cd /etc/apt/sources.list.d
+$ ls
+$ sudo rm "消したい対象"
+// GPG公開鍵の削除
+$ sudo apt-key list
+$ sudo apt-key del "keyid"
+※keyid : finger printの最後八文字
+</pre>
+        <pre class='prettyprint'>
+// aptリポジトリの確認
+$ cat /etc/apt/surces.list
+→ここを編集すればよいと思われる
+</pre>
+</main>
 </body>
