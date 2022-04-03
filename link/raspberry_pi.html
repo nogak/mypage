@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="../stylesheet.css">
+	<script async
+		src='https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst'></script>
+</head>
+
+<body>
+	<header>RaspberryPi4 ubuntu20.04 セットアップ</header>
+	<main>
+		<dvi class="right">
+			<a href="https://nogak.github.io/mypage/">my pageに戻る</a>
+		</dvi>
+		<h1>本ページの目的</h1>
+		<p>お家にラズパイ開発環境をセットアップしたのでその手順を残しておきます。今回はUbuntu Server 20.04 LTS(64bit)を入れました。</p>
+		<p>内容としては以下になります。</p>
+		<ul>
+			<li>microSDへのOSインストール</li>
+			<li>ネットワーク(インターフェース)設定</li>
+			<li>SSH接続</li>
+			<li>ホスト名の変更</li>
+		</ul>
+		<h1>準備するもの</h1>
+		<ul>
+			<li>RaspberryPi4 本体</li>
+			<li>microSDカード</li>
+			<li>microHDMIケーブル</li>
+			<li>電源アダプタ</li>
+			<li>USBキーボード</li>
+			<li>Wifiルータ or LANケーブル</li>
+		</ul>
+		<h1>手順</h1>
+		<h2 class="section-title-mid">microSDへのOSインストール</h2>
+		<p>microSDにOSを書き込むためのツールが配布されてるので<a href="https://www.raspberrypi.com/software/">こちら</a>からダウンロード・インストールします。<br>
+        (いまどきはOSインストール用のソフトウェアが配布されてるんですね。)</p>
+		<p>インストールしたソフトを起動したらインストールしたいOSを選択し、ストレージにマウントしたmicroSDを選択したら"書き込む"をクリックすれば完了です。</p>
+		<img src="./../image/raspberry_pi/raspberry_image_manager.png" height="400">
+
+
+		<h2 class="section-title-mid">ネットワーク(インターフェース)設定</h2>
+		<p>"モニター出力できる環境"と"モニター出力ができない環境"の2つの場合のやり方を記しておきます。<br>
+        なお、モニター出力環境が無い場合の方法はmicroSDを別のPCでマウントしてアクセスしないと編集できないファイルをいじる必要があるため、インターフェースの設定をラズパイ起動中に変更することができないです。</p>
+
+        <h3>モニター出力できる環境の場合</h3>
+		<p>まずmicroHDMIケーブルでモニターと接続し、USBキーボードと電源アダプタをつなぎ電源を入れます。有線でアクセスする場合はLANケーブルも接続してください。
+		</p>
+		<ol>
+			<li>microHDMIケーブル、USBキーボード、電源アダプタを接続（有線でアクセスする場合はLANケーブルも接続）</li>
+			<li>モニターにログイン画面が出たらログインしパスワード設定をする。（※初期パスは"ubuntu"）</li>
+			<li>/etc/netplan/下に設定ファイルを作成し、インターフェース設定を入れる（ファイル名は何でも良い？）
+				以下は例です。wifi設定とeth0(有線)の物理インターフェースの設定を入れてます。<br>IPは各自適した値を使用ください。
+<pre class='prettyprint lang-bash'>$ sudo touch /etc/netplan/99-network.yaml</pre>
+<pre class='prettyprint lang-bash'>$ sudo vi /etc/netplan/99-network.yaml
+#---
+network:
+    version: 2
+    renderer: networkd
+    wifis:
+        wlan0:
+            dhcp4: no
+            dhcp6: no
+            addresses: [192.168.10.9/24]
+            gateway4: 192.168.10.1
+            nameservers:
+                addresses: [192.168.10.1]
+            access-points:
+                アクセスポイント名(sshd):
+                    password: "password"
+    ethernets:
+        eth0:
+            addresses: [192.168.1.9/24]</pre>
+</li>
+		</ol>
+		
+		<h2 class="section-title-mid">SSH接続</h2>
+		<p>ここまでで正しくネットワークの設定ができていればssh接続ができます。
+		鍵認証などは必要がれば別途調べて行うと良いと思います。(後日記載するかも)</p>
+		<pre class='prettyprint lang-bash'>$ ssh ubuntu@192.168.10.9</pre>
+		<p>※初期アカウント名はubuntuなので各自自分のアカウントを作りましょう。</p>
+		<h2 class="section-title-mid">ホスト名の変更</h2>
+		<p>デフォルトではホスト名も"ubuntu"となっているので以下のコマンドで変更</p>
+		<pre class='prettyprint lang-bash'>$ sudo hostnamectl set-hostname "hostname"</pre>
+		<br>
+		<p>以上！</p>
+
+		<h2 class="section-title-mid">参考</h2>
+		<a href="https://zenn.dev/mu/articles/5446846abc06da">参考①</a>
+		<br>
+		<a href="https://www.tnrsca.jp/ubuntu-server%E3%81%AE-network-config-%E3%81%AE%E8%A8%AD%E5%AE%9A%E6%96%B9%E6%B3%95%E3%80%90rp4%E3%80%91/">参考②</a>
+		<br>
+		<a href="https://nemui.online/2021/08/15/99/">参考③</a>
+	</main>
+	<!--<footer>footer</footer>-->
+</body>
